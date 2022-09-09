@@ -9,4 +9,9 @@ const router = createRouter({
     routes,
 });
 
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title ? to.meta.title : "DATPRS";
+    next();
+});
+
 export default router;

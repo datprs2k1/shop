@@ -9,6 +9,9 @@ const routes = [
             {
                 path: "",
                 component: Home,
+                meta: {
+                    title: "Admin",
+                },
             },
         ],
     },
