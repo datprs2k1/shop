@@ -1,5 +1,6 @@
 const Admin = () => import("../admin/App.vue");
-const Home = () => import("../admin/Home/Index.vue");
+const Dashboard = () => import("../admin/Dashboard/Index.vue");
+const Test = () => import("../admin/Test/Index.vue");
 
 const routes = [
     {
@@ -8,9 +9,16 @@ const routes = [
         children: [
             {
                 path: "",
-                component: Home,
+                component: Dashboard,
                 meta: {
                     title: "Admin",
+                },
+            },
+            {
+                path: "test",
+                component: Test,
+                meta: {
+                    title: "Test",
                 },
             },
         ],
