@@ -1,6 +1,6 @@
 const Admin = () => import("../admin/App.vue");
 const Dashboard = () => import("../admin/Dashboard/Index.vue");
-const Test = () => import("../admin/Test/Index.vue");
+const Login = () => import("../admin/Login/Index.vue");
 
 const routes = [
     {
@@ -15,10 +15,10 @@ const routes = [
                 },
             },
             {
-                path: "test",
-                component: Test,
+                path: "login",
+                component: Login,
                 meta: {
-                    title: "Test",
+                    title: "Login",
                 },
             },
         ],

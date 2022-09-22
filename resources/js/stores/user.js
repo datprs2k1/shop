@@ -1,13 +1,19 @@
 import { defineStore } from "pinia";
+import { post } from "@/services/api";
 
 export const useUserStore = defineStore("user", {
-    state: () => ({ count: 0, name: "Eduardo" }),
+    state: () => ({
+        user: {},
+        isAuthenticated: false,
+    }),
     getters: {
-        doubleCount: (state) => state.count * 2,
+        getUser: (state) => state.user,
+        getAuthenticated: (state) => state.isAuthenticated,
     },
     actions: {
-        increment() {
-            this.count++;
+        login: async (data) => {
+            const response = await post("/api/login", data);
+            console.log(response);
         },
     },
 });
