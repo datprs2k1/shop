@@ -93,15 +93,43 @@
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import { useUserStore } from "@/stores/user";
+import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
 
 const { login } = useUserStore();
+
+const router = useRouter();
 
 const loginScheme = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required().min(6),
 });
 
-const onSubmit = (values) => {
-    login(values);
-};
+async function onSubmit(values) {
+    try {
+        await login(values);
+
+        Swal.fire({
+            title: "Thành công",
+            text: "Thêm thành công.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+
+        router.push({
+            name: "dashboard",
+        });
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "danger",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
+}
 </script>

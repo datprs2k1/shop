@@ -2,6 +2,9 @@ import Admin from "./admin";
 
 import { createRouter, createWebHistory } from "vue-router";
 
+import { useUserStore } from "../stores/user";
+import { storeToRefs } from "pinia";
+
 const routes = [...Admin];
 
 const router = createRouter({
@@ -9,9 +12,23 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title ? to.meta.title : "DATPRS";
-    next();
+router.beforeEach(async (to, from) => {
+    const store = useUserStore();
+    const { isAuthenticated, user } = storeToRefs(store);
+
+    document.title = to.meta.title || "DATPRS";
+
+    if (to.meta.requireAuth) {
+        if (!isAuthenticated.value && to.name !== "login") {
+            return { name: "login" };
+        }
+    }
+
+    if (to.meta.role === "Admin") {
+        if (user.value.role !== "Admin") {
+            return { name: "login" };
+        }
+    }
 });
 
 export default router;
