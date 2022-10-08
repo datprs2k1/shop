@@ -14,7 +14,12 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
     const store = useUserStore();
-    const { isAuthenticated, user } = storeToRefs(store);
+    const { isAuthenticated, user, expires_in } = storeToRefs(store);
+    const { reset } = store;
+
+    if (new Date().getTime() < expires_in) {
+        reset();
+    }
 
     document.title = to.meta.title || "DATPRS";
 

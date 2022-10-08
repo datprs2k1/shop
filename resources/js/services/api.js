@@ -1,11 +1,15 @@
 import axios from "axios";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "../stores/user";
 
-const api_url = location.protocol + "//" + location.hostname + "";
+const api_url = location.protocol + "//" + location.hostname + "/api";
 
 const getHeaders = () => {
-    let token = localStorage.getItem("token");
+    const store = useUserStore();
+    const { token } = storeToRefs(store);
+
     return {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.value}`,
     };
 };
 

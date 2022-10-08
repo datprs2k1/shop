@@ -18,7 +18,7 @@ export const useUserStore = defineStore("user", {
     },
     actions: {
         async login(data) {
-            const response = await post("/api/login", data);
+            const response = await post("/login", data);
 
             this.user = response.data.user;
             this.token = response.data.token;
@@ -26,6 +26,14 @@ export const useUserStore = defineStore("user", {
             this.expires_in =
                 new Date().getTime() + response.data.expires_in * 1000;
             this.isAuthenticated = true;
+        },
+
+        reset() {
+            this.user = null;
+            this.token = null;
+            this.type = null;
+            this.expires_in = null;
+            this.isAuthenticated = false;
         },
     },
     persist: true,

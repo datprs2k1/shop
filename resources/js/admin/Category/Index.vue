@@ -54,60 +54,77 @@
         ref="modalAdd"
     >
         <b-form>
-            <Form
-                @submit="add"
-                ref="form_add"
-                :validation-schema="categoryScheme"
-                v-slot="{ errors }"
-            >
-                <b-form-group label="Tên danh mục:" label-for="input-name">
-                    <Field
-                        id="input-name"
-                        name="name"
-                        type="text"
-                        placeholder="Nhập tên danh mục"
-                        required
-                        class="form-control"
-                        :class="{
-                            'is-invalid': errors.name,
-                        }"
-                    />
-                    <div class="invalid-feedback">
-                        {{ errors.name }}
-                    </div>
-                </b-form-group>
-                <b-form-group label="Mô tả:" label-for="input-description">
-                    <Field
-                        id="input-description"
-                        name="description"
-                        type="text"
-                        placeholder="Nhập mô tả"
-                        required
-                        class="form-control"
-                        :class="{ 'is-invalid': errors.description }"
-                    />
-                    <div class="invalid-feedback">
-                        {{ errors.description }}
-                    </div>
-                </b-form-group>
-            </Form>
+            <b-form-group label="Tên danh mục:" label-for="input-name">
+                <b-form-input
+                    id="input-name"
+                    name="name"
+                    v-model="name"
+                    type="text"
+                    placeholder="Nhập tên danh mục"
+                    required
+                    class="form-control"
+                    :class="{
+                        'is-invalid': errors.name,
+                    }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.name }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Mô tả:" label-for="input-description">
+                <b-form-input
+                    id="input-description"
+                    name="description"
+                    v-model="description"
+                    type="text"
+                    placeholder="Nhập mô tả"
+                    required
+                    class="form-control"
+                    :class="{ 'is-invalid': errors.description }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.description }}
+                </div>
+            </b-form-group>
         </b-form>
         <template #footer>
             <div>
-                <b-button variant="success" class="mr-3" @click="onSubmit">
+                <b-button
+                    :disabled="!meta.valid"
+                    variant="success"
+                    @click="add"
+                    class="mr-3"
+                >
                     Xác nhận
                 </b-button>
-                <b-button variant="danger" @click="handleReset"> Hủy </b-button>
+                <b-button
+                    variant="danger"
+                    @click="
+                        resetForm();
+                        showModalAdd = !showModalAdd;
+                    "
+                >
+                    Hủy
+                </b-button>
             </div>
         </template>
     </b-modal>
 </template>
 
 <script setup>
-import { ref, refs } from "vue";
+import { ref } from "vue";
 
-import { Form, Field, useResetForm } from "vee-validate";
+import { useForm } from "vee-validate";
+
 import * as yup from "yup";
+
+import Swal from "sweetalert2";
+
+import { useCategoryStore } from "@/stores/category";
+
+const store = useCategoryStore();
+
+const { addCategory } = store;
 
 const fields = ref([
     {
@@ -130,11 +147,33 @@ const categoryScheme = yup.object({
     description: yup.string().required("Mô tả không được để trống."),
 });
 
-const add = (values, { resetForm }) => {
-    resetForm();
-};
+const { meta, errors, useFieldModel, resetForm, setErrors } = useForm({
+    validationSchema: categoryScheme,
+});
 
-function onSubmit() {
-    console.log(this);
-}
+const [name, description] = useFieldModel(["name", "description"]);
+
+const add = async () => {
+    const data = new FormData();
+
+    data.append("name", name.value);
+    data.append("description", description.value);
+
+    try {
+        await addCategory(data);
+
+        Swal.fire({
+            title: "Thành công",
+            text: "Thêm thành công.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+
+        showModalAdd.value = false;
+    } catch (error) {
+        setErrors(error.response.data.errors);
+    }
+};
 </script>

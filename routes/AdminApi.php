@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/abc', function () {
-    return 'ABC';
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('/category', CategoryController::class);
 });
