@@ -32,6 +32,8 @@ const routes = [
                 component: Category,
                 meta: {
                     title: "Danh sách danh mục",
+                    requireAuth: true,
+                    role: "Admin",
                 },
             },
         ],

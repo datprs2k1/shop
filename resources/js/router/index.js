@@ -17,11 +17,11 @@ router.beforeEach(async (to, from) => {
     const { isAuthenticated, user, expires_in } = storeToRefs(store);
     const { reset } = store;
 
-    if (new Date().getTime() < expires_in) {
+    document.title = to.meta.title || "DATPRS";
+
+    if (new Date().getTime() > expires_in.value) {
         reset();
     }
-
-    document.title = to.meta.title || "DATPRS";
 
     if (to.meta.requireAuth) {
         if (!isAuthenticated.value && to.name !== "login") {

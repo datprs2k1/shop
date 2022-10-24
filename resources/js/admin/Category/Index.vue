@@ -22,38 +22,137 @@
                 <b-col cols="12">
                     <b-card header-tag="header" footer-tag="footer">
                         <template #header>
-                            <span>
-                                <button
-                                    class="btn btn-success"
-                                    @click="showModalAdd = !showModalAdd"
-                                    v-b-tooltip.hover.v-secondary
-                                    title="
-                                        Thêm danh mục
-                                    "
-                                >
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </span>
+                            <b-row>
+                                <b-col md="8">
+                                    <b-row>
+                                        <b-cols class="mr-4">
+                                            <span>
+                                                <button
+                                                    class="btn btn-success"
+                                                    @click="
+                                                        showModal = !showModal;
+                                                        isAdd = true;
+                                                    "
+                                                    v-b-tooltip.hover.v-secondary
+                                                    title="
+                                                        Thêm danh mục
+                                                    "
+                                                >
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </b-cols>
+                                        <b-cols>
+                                            <span>
+                                                <button
+                                                    class="btn btn-success"
+                                                    @click="
+                                                        showTrashModal =
+                                                            !showTrashModal
+                                                    "
+                                                    v-b-tooltip.hover.v-secondary
+                                                    title="
+                                                        Thùng rác
+                                                    "
+                                                >
+                                                    <i
+                                                        class="fas fa-trash-restore"
+                                                    ></i>
+                                                </button>
+                                            </span>
+                                        </b-cols>
+                                    </b-row>
+                                </b-col>
+                                <b-col md="4">
+                                    <b-row>
+                                        <b-col md="8">
+                                            <b-form-group>
+                                                <b-input-group>
+                                                    <b-form-input
+                                                        id="search"
+                                                        v-model="keyword"
+                                                        type="search"
+                                                        placeholder="Nhập từ khóa tìm kiếm"
+                                                    ></b-form-input>
+                                                </b-input-group>
+                                            </b-form-group>
+                                        </b-col>
+                                        <b-col md="4">
+                                            <button
+                                                class="btn btn-success"
+                                                @click="search"
+                                            >
+                                                Tìm kiếm
+                                            </button>
+                                        </b-col>
+                                    </b-row>
+                                </b-col>
+                            </b-row>
                         </template>
                         <b-table
                             striped
                             hover
-                            :items="items"
+                            :items="categories.data"
                             :fields="fields"
-                        ></b-table>
+                            v-model:sort-by="sortBy"
+                            v-model:sort-desc="sortDesc"
+                        >
+                            <template #cell(action)="row">
+                                <span class="mr-3"
+                                    ><b-button
+                                        size="sm"
+                                        variant="primary"
+                                        @click="show(row.item)"
+                                        v-b-tooltip.hover.v-secondary
+                                        title="
+                                                Sửa bản ghi
+                                            "
+                                    >
+                                        <i class="fas fa-edit fa-lg"></i>
+                                    </b-button>
+                                </span>
+                                <span>
+                                    <b-button
+                                        size="sm"
+                                        variant="danger"
+                                        @click="del(row.item.id)"
+                                        v-b-tooltip.hover.v-secondary
+                                        title="
+                                                Xóa bản ghi
+                                            "
+                                    >
+                                        <i class="fas fa-trash fa-lg"></i>
+                                    </b-button>
+                                </span>
+                            </template>
+                        </b-table>
+                        <b-pagination
+                            class="d-flex justify-content-end mt-4"
+                            v-model="current_page"
+                            :total-rows="categories.total"
+                            :per-page="categories.per_page"
+                            first-text="First"
+                            prev-text="Prev"
+                            next-text="Next"
+                            last-text="Last"
+                        ></b-pagination>
                     </b-card>
                 </b-col>
             </b-row>
         </b-container-fluid>
     </section>
-    <b-modal
-        v-model="showModalAdd"
-        id="modal-add"
-        size="lg"
-        title="Thêm danh mục"
-        ref="modalAdd"
-    >
+    <b-modal v-model="showModal" id="modal" size="lg">
+        <template #title>
+            {{ isAdd ? "Thêm danh mục" : "Sửa danh mục" }}
+        </template>
         <b-form>
+            <b-form-input
+                id="input-id"
+                name="id"
+                v-model="id"
+                type="text"
+                hidden
+            />
             <b-form-group label="Tên danh mục:" label-for="input-name">
                 <b-form-input
                     id="input-name"
@@ -92,27 +191,25 @@
                 <b-button
                     :disabled="!meta.valid"
                     variant="success"
-                    @click="add"
+                    @click="isAdd ? add() : edit()"
                     class="mr-3"
                 >
                     Xác nhận
                 </b-button>
-                <b-button
-                    variant="danger"
-                    @click="
-                        resetForm();
-                        showModalAdd = !showModalAdd;
-                    "
-                >
+                <b-button variant="danger" @click="closeModal()">
                     Hủy
                 </b-button>
             </div>
         </template>
     </b-modal>
+    <b-modal v-model="showTrashModal" id="modal" size="lg">
+        <template #title> Thùng rác </template>
+        <h1>Thùng rác</h1>
+    </b-modal>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, onBeforeMount, ref, toRef, watch } from "vue";
 
 import { useForm } from "vee-validate";
 
@@ -121,37 +218,94 @@ import * as yup from "yup";
 import Swal from "sweetalert2";
 
 import { useCategoryStore } from "@/stores/category";
+import { storeToRefs } from "pinia";
 
 const store = useCategoryStore();
 
-const { addCategory } = store;
+const { categories } = storeToRefs(store);
+
+const {
+    addCategory,
+    deleteCategory,
+    editCategory,
+    getListCategory,
+    searchCategory,
+} = store;
+
+const sortBy = ref("id");
+const sortDesc = ref(false);
+const current_page = ref(1);
+const keyword = ref(null);
 
 const fields = ref([
     {
-        key: "age",
-        label: "Tuổi",
+        key: "id",
+        label: "ID",
+        class: "text-center",
+    },
+    {
+        key: "name",
+        label: "Tên danh mục",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "description",
+        label: "Mô tả",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "created_at",
+        label: "Ngày tạo",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "updated_at",
+        label: "Ngày sửa",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "action",
+        label: "Hành động",
+        class: "text-center",
     },
 ]);
 
-const items = ref([
-    { age: 40, first_name: "Dickerson", last_name: "Macdonald" },
-    { age: 21, first_name: "Larsen", last_name: "Shaw" },
-    { age: 89, first_name: "Geneva", last_name: "Wilson" },
-    { age: 38, first_name: "Jami", last_name: "Carney" },
-]);
+const showModal = ref(false);
 
-const showModalAdd = ref(false);
+const showTrashModal = ref(false);
+
+const closeModal = () => {
+    resetForm();
+    showModal.value = !showModal.value;
+};
+
+const isAdd = ref(true);
 
 const categoryScheme = yup.object({
     name: yup.string().required("Tên danh mục không được để trống."),
     description: yup.string().required("Mô tả không được để trống."),
 });
 
-const { meta, errors, useFieldModel, resetForm, setErrors } = useForm({
-    validationSchema: categoryScheme,
+const { meta, errors, useFieldModel, resetForm, setErrors, setValues } =
+    useForm({
+        validationSchema: categoryScheme,
+    });
+
+const [id, name, description] = useFieldModel(["id", "name", "description"]);
+
+onBeforeMount(async () => {
+    await getListCategory();
 });
 
-const [name, description] = useFieldModel(["name", "description"]);
+const currenPage = watch(current_page, async (newPage) => {
+    const url = categories.value.links[newPage].url;
+
+    await getListCategory(url.slice(19, url.length));
+});
 
 const add = async () => {
     const data = new FormData();
@@ -161,6 +315,7 @@ const add = async () => {
 
     try {
         await addCategory(data);
+        await getListCategory();
 
         Swal.fire({
             title: "Thành công",
@@ -171,9 +326,78 @@ const add = async () => {
             width: 360,
         });
 
-        showModalAdd.value = false;
+        closeModal();
     } catch (error) {
         setErrors(error.response.data.errors);
     }
+};
+
+const del = async (id) => {
+    try {
+        await deleteCategory(id);
+        await getListCategory();
+
+        Swal.fire({
+            title: "Thành công",
+            text: "Thêm thành công.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
+};
+
+const edit = async () => {
+    const data = new FormData();
+
+    data.append("name", name.value);
+    data.append("description", description.value);
+    data.append("_method", "PUT");
+
+    try {
+        await editCategory(id.value, data);
+
+        await getListCategory();
+
+        closeModal();
+
+        Swal.fire({
+            title: "Thành công",
+            text: "Thêm thành công.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    } catch (error) {}
+};
+
+const search = async () => {
+    const url =
+        keyword != null
+            ? `/admin/category/?q=${keyword.value}`
+            : "/admin/category";
+    await getListCategory(url);
+};
+
+const show = (category) => {
+    showModal.value = true;
+    isAdd.value = false;
+
+    setValues({
+        id: category.id,
+        name: category.name,
+        description: category.description,
+    });
 };
 </script>

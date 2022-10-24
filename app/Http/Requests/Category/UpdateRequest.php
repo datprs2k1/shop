@@ -6,7 +6,7 @@ use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,7 @@ class StoreRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique(Category::class),
+                Rule::unique(Category::class, 'name')->ignore($this->category),
             ],
             'description' => [
                 'required',

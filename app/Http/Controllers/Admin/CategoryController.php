@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\StoreRequest;
+use App\Http\Requests\Category\UpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -22,9 +23,18 @@ class CategoryController extends Controller
         $this->model = Category::query();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $q = $request->q;
+
+        $data = $this->model
+            ->when($q, function ($query, $q) {
+                $query->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('description', 'like', '%' . $q . '%');
+            })
+            ->paginate(1)->withQueryString();
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -82,9 +92,19 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        //
+        $category = $this->model->find($id);
+
+        $category->name = $request->name;
+        $category->description = $request->description;
+
+        $category->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Sửa thành công.'
+        ], 200);
     }
 
     /**
@@ -95,6 +115,27 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = $this->model->find($id);
+        $category->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Xoá thành công.'
+        ], 200);
+    }
+
+    public function listTrash(Request $request)
+    {
+        $q = $request->q;
+
+        $data = $this->model
+            ->onlyTrashed()
+            ->when($q, function ($query, $q) {
+                $query->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('description', 'like', '%' . $q . '%');
+            })
+            ->paginate(1)->withQueryString();
+
+        return response()->json($data, 200);
     }
 }
