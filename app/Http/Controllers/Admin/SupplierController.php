@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Category\StoreRequest;
-use App\Http\Requests\Category\UpdateRequest;
-use App\Models\Category;
+use App\Http\Requests\Supplier\StoreRequest;
+use App\Http\Requests\Supplier\UpdateRequest;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class CategoryController extends Controller
 
     public function __construct()
     {
-        $this->model = Category::query();
+        $this->model = Supplier::query();
     }
 
     public function index(Request $request)
@@ -55,12 +55,12 @@ class CategoryController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $category = new Category();
+        $supplier = new Supplier();
 
-        $category->name = $request->name;
-        $category->description = $request->description;
+        $supplier->name = $request->name;
+        $supplier->description = $request->description;
 
-        $category->save();
+        $supplier->save();
     }
 
     /**
@@ -94,12 +94,12 @@ class CategoryController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $category = $this->model->find($id);
+        $supplier = $this->model->find($id);
 
-        $category->name = $request->name;
-        $category->description = $request->description;
+        $supplier->name = $request->name;
+        $supplier->description = $request->description;
 
-        $category->save();
+        $supplier->save();
 
         return response()->json([
             'status' => 'success',
@@ -115,8 +115,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = $this->model->find($id);
-        $category->delete();
+        $supplier = $this->model->find($id);
+        $supplier->delete();
 
         return response()->json([
             'status' => 'success',
@@ -128,7 +128,7 @@ class CategoryController extends Controller
     {
         $q = $request->q;
 
-        $data = Category::onlyTrashed()
+        $data = Supplier::onlyTrashed()
             ->when($q, function ($query, $q) {
                 $query->where('name', 'like', '%' . $q . '%');
             })
@@ -139,9 +139,9 @@ class CategoryController extends Controller
 
     public function deleteFromTrash($id)
     {
-        $category = $this->model->withTrashed()->find($id);
+        $supplier = $this->model->withTrashed()->find($id);
 
-        $category->forceDelete();
+        $supplier->forceDelete();
 
         return response()->json([
             'status' => 'success',
@@ -151,9 +151,9 @@ class CategoryController extends Controller
 
     public function restoreFromTrash($id)
     {
-        $category = $this->model->withTrashed()->find($id);
+        $supplier = $this->model->withTrashed()->find($id);
 
-        $category->restore();
+        $supplier->restore();
 
         return response()->json([
             'status' => 'success',

@@ -1,15 +1,17 @@
 import { defineStore } from "pinia";
-import { del, get, post } from "@/services/api";
+import { del, get, post, put } from "@/services/api";
 
 export const useCategoryStore = defineStore("category", {
     state: () => ({
         category: {},
         categories: [],
+        trash: [],
     }),
 
     getters: {
         getCategory: (state) => state.category,
         getCategories: (state) => state.categories,
+        getTrash: (state) => state.trash,
     },
 
     actions: {
@@ -34,7 +36,15 @@ export const useCategoryStore = defineStore("category", {
         async getListTrashCategory(url = `/admin/category/trash`) {
             const response = await get(url);
 
-            this.categories = response.data;
+            this.trash = response.data;
+        },
+
+        async deleteTrash(id) {
+            const response = await del(`/admin/category/trash/` + id);
+        },
+
+        async restoreFromTrash(id) {
+            const response = await put(`/admin/category/trash/restore/` + id);
         },
     },
 });

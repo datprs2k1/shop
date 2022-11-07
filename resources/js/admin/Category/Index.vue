@@ -46,10 +46,7 @@
                                             <span>
                                                 <button
                                                     class="btn btn-success"
-                                                    @click="
-                                                        showTrashModal =
-                                                            !showTrashModal
-                                                    "
+                                                    @click="showTrash()"
                                                     v-b-tooltip.hover.v-secondary
                                                     title="
                                                         Thùng rác
@@ -204,7 +201,76 @@
     </b-modal>
     <b-modal v-model="showTrashModal" id="modal" size="lg">
         <template #title> Thùng rác </template>
-        <h1>Thùng rác</h1>
+        <b-row>
+            <b-col md="6">
+                <b-row>
+                    <b-col md="8">
+                        <b-form-group>
+                            <b-input-group>
+                                <b-form-input
+                                    id="search"
+                                    v-model="keyword_trash"
+                                    type="search"
+                                    placeholder="Nhập từ khóa tìm kiếm"
+                                ></b-form-input>
+                            </b-input-group>
+                        </b-form-group>
+                    </b-col>
+                    <b-col md="4">
+                        <button class="btn btn-success" @click="searchTrash">
+                            Tìm kiếm
+                        </button>
+                    </b-col>
+                </b-row>
+            </b-col>
+        </b-row>
+        <b-table
+            striped
+            hover
+            :items="trash.data"
+            :fields="fields"
+            v-model:sort-by="sortBy"
+            v-model:sort-desc="sortDesc"
+        >
+            <template #cell(action)="row">
+                <span class="mr-3"
+                    ><b-button
+                        size="sm"
+                        variant="primary"
+                        @click="restoreTrash(row.item.id)"
+                        v-b-tooltip.hover.v-secondary
+                        title="
+                                                Khôi phục
+                                            "
+                    >
+                        <i class="fas fa-trash-restore fa-lg"></i>
+                    </b-button>
+                </span>
+                <span>
+                    <b-button
+                        size="sm"
+                        variant="danger"
+                        @click="delTrash(row.item.id)"
+                        v-b-tooltip.hover.v-secondary
+                        title="
+                                                Xóa vĩnh viễn
+                                            "
+                    >
+                        <i class="fas fa-trash fa-lg"></i>
+                    </b-button>
+                </span>
+            </template>
+        </b-table>
+        <b-pagination
+            class="d-flex justify-content-end mt-4"
+            v-model="current_page_trash"
+            :total-rows="trash.total"
+            :per-page="trash.per_page"
+            first-text="First"
+            prev-text="Prev"
+            next-text="Next"
+            last-text="Last"
+        ></b-pagination>
     </b-modal>
 </template>
 
@@ -222,20 +288,25 @@ import { storeToRefs } from "pinia";
 
 const store = useCategoryStore();
 
-const { categories } = storeToRefs(store);
+const { categories, trash } = storeToRefs(store);
 
 const {
     addCategory,
     deleteCategory,
     editCategory,
     getListCategory,
-    searchCategory,
+    getListTrashCategory,
+    deleteTrash,
+    restoreFromTrash,
 } = store;
 
 const sortBy = ref("id");
 const sortDesc = ref(false);
 const current_page = ref(1);
 const keyword = ref(null);
+
+const current_page_trash = ref(1);
+const keyword_trash = ref(null);
 
 const fields = ref([
     {
@@ -390,6 +461,14 @@ const search = async () => {
     await getListCategory(url);
 };
 
+const searchTrash = async () => {
+    const url =
+        keyword_trash != null
+            ? `/admin/category/trash/?q=${keyword_trash.value}`
+            : "/admin/category/trash";
+    await getListTrashCategory(url);
+};
+
 const show = (category) => {
     showModal.value = true;
     isAdd.value = false;
@@ -398,6 +477,93 @@ const show = (category) => {
         id: category.id,
         name: category.name,
         description: category.description,
+    });
+};
+
+const showTrash = async () => {
+    showTrashModal.value = !showTrashModal.value;
+    try {
+        await getListTrashCategory();
+    } catch (error) {}
+};
+
+const restoreTrash = async (id) => {
+    Swal.fire({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Bạn sẽ không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý!",
+        cancelButtonText: "Hủy",
+        width: 480,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await restoreFromTrash(id);
+                Swal.fire({
+                    title: "Đã xóa!",
+                    icon: "success",
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1000,
+                    width: 360,
+                });
+
+                await getListTrashCategory();
+                await getListCategory();
+            } catch (error) {
+                Swal.fire({
+                    title: "Thất bại",
+                    text: "Có lỗi xảy ra.",
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1000,
+                    width: 360,
+                });
+            }
+        }
+    });
+};
+
+const delTrash = async (id) => {
+    Swal.fire({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Bạn sẽ không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý!",
+        cancelButtonText: "Hủy",
+        width: 480,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await deleteTrash(id);
+                Swal.fire({
+                    title: "Đã xóa!",
+                    icon: "success",
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1000,
+                    width: 360,
+                });
+
+                await getListTrashCategory();
+                await getListCategory();
+            } catch (error) {
+                Swal.fire({
+                    title: "Thất bại",
+                    text: "Có lỗi xảy ra.",
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1000,
+                    width: 360,
+                });
+            }
+        }
     });
 };
 </script>
