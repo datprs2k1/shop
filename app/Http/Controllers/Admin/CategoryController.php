@@ -61,6 +61,10 @@ class CategoryController extends Controller
         $category->description = $request->description;
 
         $category->save();
+
+        return response()->json([
+            'message' => 'Thêm thành công.'
+        ], 200);
     }
 
     /**
