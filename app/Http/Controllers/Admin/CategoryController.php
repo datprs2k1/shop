@@ -100,6 +100,13 @@ class CategoryController extends Controller
     {
         $category = $this->model->find($id);
 
+        if ($category == null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy danh mục.'
+            ], 422);
+        }
+
         $category->name = $request->name;
         $category->description = $request->description;
 
@@ -120,6 +127,14 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = $this->model->find($id);
+
+        if ($category == null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy danh mục.'
+            ], 422);
+        }
+
         $category->delete();
 
         return response()->json([

@@ -15,6 +15,8 @@ import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
+import { UploadMedia, UpdateMedia } from "vue-media-upload";
+
 const app = createApp(App);
 
 const pinia = createPinia();
@@ -26,5 +28,8 @@ app.use(router);
 app.use(pinia);
 
 app.use(BootstrapVue3);
+
+app.component("upload-media", UploadMedia);
+app.component("update-media", UpdateMedia);
 
 app.mount("#app");
