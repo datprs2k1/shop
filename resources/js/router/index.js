@@ -1,11 +1,12 @@
 import Admin from "./admin";
+import Home from "./home";
 
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "../stores/user";
 import { storeToRefs } from "pinia";
 
-const routes = [...Admin];
+const routes = [...Admin, ...Home];
 
 const router = createRouter({
     history: createWebHistory(),

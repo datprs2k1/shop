@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('image');
             $table->text('description')->nullable();
             $table->text('manual')->nullable();
             $table->integer('price');
+            $table->integer('unit');
             $table->foreignId('category_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained()->onUpdate('cascade')

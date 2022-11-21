@@ -57,10 +57,7 @@ class UpdateRequest extends FormRequest
                 Rule::unique(Supplier::class)->ignore($this->supplier),
             ],
             'logo' => [
-                'required',
-                'file',
-                'image',
-                'max:2048'
+                'nullable',
             ],
         ];
     }

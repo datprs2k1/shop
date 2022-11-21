@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('/upload', [ImageController::class, 'store']);
+    Route::get('/media/{id}', [ImageController::class, 'getImages']);
+
     Route::controller(CategoryController::class)->group(function () {
         Route::delete('/category/trash/{id}', 'deleteFromTrash');
         Route::put('/category/trash/restore/{id}', 'restoreFromTrash');
@@ -30,4 +35,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/supplier/trash', 'listTrash');
     });
     Route::resource('/supplier', SupplierController::class);
+
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/product/status', 'getProductStatus');
+        Route::get('/product/unit', 'getProductUnit');
+        Route::delete('/product/trash/{id}', 'deleteFromTrash');
+        Route::put('/product/trash/restore/{id}', 'restoreFromTrash');
+        Route::get('/product/trash', 'listTrash');
+    });
+    Route::resource('/product', ProductController::class);
 });

@@ -17,8 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('link');
-            $table->tinyInteger('status')->default(0);
+            $table->string('name');
             $table->timestamps();
         });
     }

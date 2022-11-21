@@ -46,5 +46,17 @@ export const useCategoryStore = defineStore("category", {
         async restoreFromTrash(id) {
             const response = await put(`/admin/category/trash/restore/` + id);
         },
+
+        async getListCategoryHome() {
+            const response = await get("/category");
+
+            this.categories = response.data;
+        },
+
+        async getDetailCategoryHome(id) {
+            const response = await get("/category/" + id);
+
+            this.category = response.data;
+        },
     },
 });

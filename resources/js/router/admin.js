@@ -3,6 +3,7 @@ const Dashboard = () => import("../admin/Dashboard/Index.vue");
 const Login = () => import("../admin/Login/Index.vue");
 const Category = () => import("../admin/Category/Index.vue");
 const Supplier = () => import("../admin/Supplier/Index.vue");
+const Product = () => import("../admin/Product/Index.vue");
 
 const routes = [
     {
@@ -43,6 +44,16 @@ const routes = [
                 component: Supplier,
                 meta: {
                     title: "Danh sách nhà cung cấp",
+                    requireAuth: true,
+                    role: "Admin",
+                },
+            },
+            {
+                path: "product",
+                name: "admin.product",
+                component: Product,
+                meta: {
+                    title: "Danh sách sản phẩm",
                     requireAuth: true,
                     role: "Admin",
                 },

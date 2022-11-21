@@ -7,6 +7,8 @@ use App\Http\Requests\Supplier\StoreRequest;
 use App\Http\Requests\Supplier\UpdateRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SupplierController extends Controller
 {
@@ -55,12 +57,28 @@ class SupplierController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $file_name = time() . '_' . $request->logo->getClientOriginalName();
+        $file_path = $request->file('logo')->storeAs('images/suppliers', $file_name, 'public');
+
         $supplier = new Supplier();
 
         $supplier->name = $request->name;
         $supplier->description = $request->description;
+        $supplier->address = $request->address;
+        $supplier->email = $request->email;
+        $supplier->phone = $request->phone;
+        $supplier->website = $request->website;
+        $supplier->logo = '/storage/' . $file_path;
 
         $supplier->save();
+
+        File::cleanDirectory(public_path('/tmp/uploads'));
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Thêm thành công.',
+        ], 201);
     }
 
     /**
@@ -98,8 +116,21 @@ class SupplierController extends Controller
 
         $supplier->name = $request->name;
         $supplier->description = $request->description;
+        $supplier->address = $request->address;
+        $supplier->email = $request->email;
+        $supplier->phone = $request->phone;
+        $supplier->website = $request->website;
+
+        if ($request->file('logo') != null) {
+            Storage::disk('public')->delete($supplier->logo);
+            $file_name = time() . '_' . $request->logo->getClientOriginalName();
+            $file_path = $request->file('logo')->storeAs('images/suppliers', $file_name, 'public');
+            $supplier->logo = '/storage/' . $file_path;
+        }
 
         $supplier->save();
+
+        File::cleanDirectory(public_path('/tmp/uploads'));
 
         return response()->json([
             'status' => 'success',

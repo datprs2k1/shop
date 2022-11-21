@@ -94,6 +94,24 @@
                             v-model:sort-by="sortBy"
                             v-model:sort-desc="sortDesc"
                         >
+                            <template #cell(logo)="row">
+                                <div>
+                                    <center>
+                                        <span>
+                                            <img
+                                                style="
+                                                    border-radius: 5px;
+                                                    width: 100px;
+                                                    height: 80px;
+                                                    box-shadow: 0px 0px 10px
+                                                        #ccc;
+                                                "
+                                                :src="row.item.logo"
+                                            />
+                                        </span>
+                                    </center>
+                                </div>
+                            </template>
                             <template #cell(action)="row">
                                 <span class="mr-3"
                                     ><b-button
@@ -180,6 +198,107 @@
                 />
                 <div class="invalid-feedback">
                     {{ errors.description }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Địa chỉ:" label-for="input-address">
+                <b-form-textarea
+                    id="input-address"
+                    name="address"
+                    v-model="address"
+                    placeholder="Nhập mô tả"
+                    rows="3"
+                    required
+                    class="form-control"
+                    :class="{ 'is-invalid': errors.address }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.address }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Số điện thoại:" label-for="input-phone">
+                <b-form-input
+                    id="input-phone"
+                    name="phone"
+                    v-model="phone"
+                    type="number"
+                    placeholder="Nhập Số điện thoại"
+                    required
+                    class="form-control"
+                    :class="{
+                        'is-invalid': errors.phone,
+                    }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.phone }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Email:" label-for="input-email">
+                <b-form-input
+                    id="input-email"
+                    name="email"
+                    v-model="email"
+                    type="email"
+                    placeholder="Nhập Email"
+                    required
+                    class="form-control"
+                    :class="{
+                        'is-invalid': errors.email,
+                    }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.email }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Website:" label-for="input-website">
+                <b-form-input
+                    id="input-website"
+                    name="website"
+                    v-model="website"
+                    type="website"
+                    placeholder="Nhập website"
+                    required
+                    class="form-control"
+                    :class="{
+                        'is-invalid': errors.website,
+                    }"
+                />
+                <div class="invalid-feedback">
+                    {{ errors.email }}
+                </div>
+            </b-form-group>
+            <b-form-group label="Logo:" label-for="input-logo">
+                <b-row>
+                    <b-col md="4">
+                        <input
+                            id="input-logo"
+                            type="file"
+                            @change="onFileChange"
+                            plain
+                            :class="{
+                                'input-error': errors.image,
+                            }"
+                            ref="input_logo"
+                        />
+
+                        <img
+                            v-if="url"
+                            :src="url"
+                            class="img-fluid"
+                            style="
+                                border-radius: 5px;
+                                box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+                                margin-top: 6px;
+                                max-width: 160px;
+                                max-height: 160px;
+                            "
+                        />
+                    </b-col>
+                </b-row>
+                <div
+                    v-if="errors.image"
+                    style="color: #dc3545; font-size: 12.6px; margin-top: 3px"
+                >
+                    {{ errors.image }}
                 </div>
             </b-form-group>
         </b-form>
@@ -283,10 +402,11 @@ import * as yup from "yup";
 
 import Swal from "sweetalert2";
 
-import { useCategoryStore } from "@/stores/category";
+import { useSupplierStore } from "@/stores/supplier";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
 
-const store = useCategoryStore();
+const store = useSupplierStore();
 
 const { suppliers, trash } = storeToRefs(store);
 
@@ -299,6 +419,10 @@ const {
     deleteTrash,
     restoreFromTrash,
 } = store;
+
+const server = ref("/admin/upload");
+const logo = ref();
+const url = ref();
 
 const sortBy = ref("id");
 const sortDesc = ref(false);
@@ -315,6 +439,11 @@ const fields = ref([
         class: "text-center",
     },
     {
+        key: "logo",
+        label: "Logo",
+        class: "text-center",
+    },
+    {
         key: "name",
         label: "Tên nhà cung cấp",
         sortable: true,
@@ -327,14 +456,26 @@ const fields = ref([
         class: "text-center",
     },
     {
-        key: "created_at",
-        label: "Ngày tạo",
+        key: "address",
+        label: "Địa chỉ",
         sortable: true,
         class: "text-center",
     },
     {
-        key: "updated_at",
-        label: "Ngày sửa",
+        key: "phone",
+        label: "SĐT",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "email",
+        label: "Email",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "created_at",
+        label: "Ngày tạo",
         sortable: true,
         class: "text-center",
     },
@@ -356,17 +497,46 @@ const closeModal = () => {
 
 const isAdd = ref(true);
 
-const categoryScheme = yup.object({
+const input_logo = ref(null);
+
+defineExpose({
+    input_logo,
+});
+
+const onFileChange = (e) => {
+    logo.value = e.target.files[0];
+    url.value = URL.createObjectURL(logo.value);
+};
+
+const supplierScheme = yup.object({
     name: yup.string().required("Tên nhà cung cấp không được để trống."),
     description: yup.string().required("Mô tả không được để trống."),
+    address: yup.string().required("Địa chỉ không được để trống."),
+    phone: yup
+        .string()
+        .required("Số điện thoại không được để trống.")
+        .length(10, "Số điện thoại phải có 10 số."),
+    email: yup
+        .string()
+        .required("Email không được để trống.")
+        .email("Email không đúng định dạng."),
+    website: yup.string().required("Website không được để trống."),
 });
 
 const { meta, errors, useFieldModel, resetForm, setErrors, setValues } =
     useForm({
-        validationSchema: categoryScheme,
+        validationSchema: supplierScheme,
     });
 
-const [id, name, description] = useFieldModel(["id", "name", "description"]);
+const [id, name, description, address, phone, email, website] = useFieldModel([
+    "id",
+    "name",
+    "description",
+    "address",
+    "phone",
+    "email",
+    "website",
+]);
 
 onBeforeMount(async () => {
     await getListSupplier();
@@ -383,6 +553,11 @@ const add = async () => {
 
     data.append("name", name.value);
     data.append("description", description.value);
+    data.append("address", address.value);
+    data.append("phone", phone.value);
+    data.append("email", email.value);
+    data.append("logo", logo.value);
+    data.append("website", website.value);
 
     try {
         await addSupplier(data);
@@ -396,6 +571,11 @@ const add = async () => {
             timer: 1000,
             width: 360,
         });
+
+        resetForm();
+        url.value = "";
+        logo.value = "";
+        input_logo.value.value = "";
 
         closeModal();
     } catch (error) {
@@ -433,6 +613,11 @@ const edit = async () => {
 
     data.append("name", name.value);
     data.append("description", description.value);
+    data.append("address", address.value);
+    data.append("phone", phone.value);
+    data.append("email", email.value);
+    data.append("logo", logo.value);
+    data.append("website", website.value);
     data.append("_method", "PUT");
 
     try {
@@ -440,44 +625,57 @@ const edit = async () => {
 
         await getListSupplier();
 
+        resetForm();
+        url.value = "";
+        logo.value = "";
+        input_logo.value.value = "";
+
         closeModal();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: "Sửa thành công.",
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
             width: 360,
         });
-    } catch (error) {}
+    } catch (error) {
+        setErrors(error.response.data.errors);
+    }
 };
 
 const search = async () => {
     const url =
         keyword != null
-            ? `/admin/category/?q=${keyword.value}`
-            : "/admin/category";
+            ? `/admin/supplier/?q=${keyword.value}`
+            : "/admin/supplier";
     await getListSupplier(url);
 };
 
 const searchTrash = async () => {
     const url =
         keyword_trash != null
-            ? `/admin/category/trash/?q=${keyword_trash.value}`
-            : "/admin/category/trash";
+            ? `/admin/supplier/trash/?q=${keyword_trash.value}`
+            : "/admin/supplier/trash";
     await getListTrashSupplier(url);
 };
 
-const show = (category) => {
+const show = (supplier) => {
     showModal.value = true;
     isAdd.value = false;
 
     setValues({
-        id: category.id,
-        name: category.name,
-        description: category.description,
+        id: supplier.id,
+        name: supplier.name,
+        description: supplier.description,
+        address: supplier.address,
+        phone: supplier.phone,
+        email: supplier.email,
+        website: supplier.website,
     });
+
+    url.value = supplier.logo;
 };
 
 const showTrash = async () => {

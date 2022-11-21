@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +24,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
+    Route::post('register', 'register');
+});
+
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('category', 'index');
+    Route::get('category/{id}', 'detail');
+});
+
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/product/status', 'getProductStatus');
+    Route::get('/product/unit', 'getProductUnit');
+    Route::get('product/{id}', 'detail');
+});
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('cart', CartController::class);
 });

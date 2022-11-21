@@ -25,7 +25,9 @@
         "vue-loader": "^17.0.0",
         "vue-media-upload": "^1.1.4",
         "vue-meta": "^3.0.0-alpha.10",
+        "vue-multiselect": "^3.0.0-alpha.2",
         "vue-router": "^4.1.5",
+        "vue-select": "^4.0.0-beta.6",
         "vue-sweetalert2": "^5.0.5",
         "vuex": "^4.0.2",
         "yup": "^0.32.11"

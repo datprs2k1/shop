@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { del, get, post, put } from "@/services/api";
 
-export const useCategoryStore = defineStore("category", {
+export const useSupplierStore = defineStore("supplier", {
     state: () => ({
         supplier: {},
         suppliers: [],
@@ -30,7 +30,7 @@ export const useCategoryStore = defineStore("category", {
         async getListSupplier(url = `/admin/supplier/`) {
             const response = await get(url);
 
-            this.categories = response.data;
+            this.suppliers = response.data;
         },
 
         async getListTrashSupplier(url = `/admin/supplier/trash`) {
