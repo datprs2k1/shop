@@ -35,7 +35,7 @@
                                             <img
                                                 class="img-responsive"
                                                 alt=""
-                                                :src="`${product.image}`"
+                                                :src="`/storage/${product.image}`"
                                             />
                                         </div>
                                         <!-- /.single-product-gallery-item -->
@@ -76,9 +76,16 @@
                                             </div>
                                             <div class="col-sm-9">
                                                 <div class="stock-box">
-                                                    <span class="value">{{
-                                                        productStatus.name
-                                                    }}</span>
+                                                    <span class="value"
+                                                        >{{
+                                                            productStatus.name
+                                                        }}
+                                                        - Số lượng:
+                                                        {{
+                                                            product.inventory
+                                                                .quantity
+                                                        }}</span
+                                                    >
                                                 </div>
                                             </div>
                                         </div>

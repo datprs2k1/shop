@@ -142,7 +142,7 @@
                                                                                 href=""
                                                                             >
                                                                                 <img
-                                                                                    :src="`${product.image}`"
+                                                                                    :src="`/storage/${product.image}`"
                                                                                     alt=""
                                                                                 />
                                                                             </a>
@@ -323,7 +323,7 @@ const add = async (id) => {
     if (!find) {
         const formData = new FormData();
         formData.append("product_id", id);
-        formData.append("quantity", quantity.value);
+        formData.append("quantity", 1);
 
         await addCart(formData);
 

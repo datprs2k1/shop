@@ -130,7 +130,10 @@
                     >
                         <!-- ============================================================= SHOPPING CART DROPDOWN ============================================================= -->
 
-                        <div class="dropdown dropdown-cart">
+                        <div
+                            class="dropdown dropdown-cart"
+                            :class="{ open: isActived }"
+                        >
                             <a
                                 href="#"
                                 class="dropdown-toggle lnk-cart"
@@ -155,10 +158,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <ul
-                                class="dropdown-menu"
-                                :class="{ show: isActived }"
-                            >
+                            <ul class="dropdown-menu">
                                 <div v-if="cart.length > 0">
                                     <li v-for="item in cart" :key="item.id">
                                         <div class="cart-item product-summary">
@@ -167,7 +167,7 @@
                                                     <div class="image">
                                                         <a href="#"
                                                             ><img
-                                                                :src="`${item.product.image}`"
+                                                                :src="`/storage/${item.product.image}`"
                                                                 alt=""
                                                         /></a>
                                                     </div>
@@ -210,10 +210,10 @@
                                                 </span>
                                             </div>
                                             <div class="clearfix"></div>
-                                            <a
-                                                href=""
+                                            <router-link
+                                                :to="{ name: 'cart' }"
                                                 class="btn btn-upper btn-primary btn-block m-t-20"
-                                                >Thanh toán</a
+                                                >Thanh toán</router-link
                                             >
                                         </div>
                                         <!-- /.cart-total-->

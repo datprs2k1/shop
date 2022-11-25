@@ -110,6 +110,11 @@ const menu = [
         icon: "nav-icon fas fa-warehouse",
         link: "admin.product",
     },
+    {
+        name: "Quan lý đơn hàng",
+        icon: "nav-icon fas fa-warehouse",
+        link: "admin.order",
+    },
 ];
 
 const toggle = () => {

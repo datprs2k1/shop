@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +40,15 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/{id}', 'detail');
 });
 
+Route::controller(AddressController::class)->group(function () {
+    Route::get('address/city', 'city');
+    Route::get('address/district/{city}', 'district');
+});
+
+Route::get('order/method', [OrderController::class, 'getMethod']);
+Route::get('order/status', [OrderController::class, 'getStatus']);
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('cart', CartController::class);
+    Route::resource('order', OrderController::class);
 });

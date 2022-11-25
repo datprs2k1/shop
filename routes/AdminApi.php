@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,4 +46,16 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/product/trash', 'listTrash');
     });
     Route::resource('/product', ProductController::class);
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::post('/order/approve/{id}', 'approve');
+        Route::post('/order/cancel/{id}', 'cancel');
+        Route::get('/order', 'index');
+    });
+
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('/report/month', 'doanhthutrong30ngay');
+        Route::get('/report/year', 'doanhthutrong12thang');
+        Route::get('/report/product', 'sanpham');
+    });
 });

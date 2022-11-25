@@ -17,8 +17,13 @@ return new class extends Migration
             $table->id();
             $table->integer('total');
             $table->tinyInteger('status')->default(0);
-            $table->foreignId('address_id')->constrained()->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->string('name');
+            $table->string('city');
+            $table->string('district');
+            $table->string('ward');
+            $table->string('address');
+            $table->string('phone');
+            $table->tinyInteger('method');
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->timestamps();

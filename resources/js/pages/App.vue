@@ -1,5 +1,5 @@
 <template>
-    <home-header />
+    <home-header :key="route.fullPath" />
     <router-view />
     <home-footer />
 </template>

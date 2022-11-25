@@ -64,7 +64,7 @@
                                         <td class="cart-image">
                                             <a class="entry-thumbnail" href="">
                                                 <img
-                                                    :src="`${item.product.image}`"
+                                                    :src="`/storage/${item.product.image}`"
                                                     alt=""
                                                 />
                                             </a>
@@ -139,6 +139,7 @@
                                     style="height: 300px"
                                 >
                                     <h5>Vui lòng chọn địa chỉ giao hàng.</h5>
+
                                     <div class="row">
                                         <div class="col-md-7">
                                             <div class="form-group">
@@ -151,6 +152,7 @@
                                                     name="ten_nguoi_nhan"
                                                     id="ten_nguoi_nhan"
                                                     placeholder="Nguyen Văn A"
+                                                    v-model="name"
                                                 />
                                             </div>
                                         </div>
@@ -165,6 +167,7 @@
                                                     name="so_dien_thoai"
                                                     id="so_dien_thoai"
                                                     maxlength="10"
+                                                    v-model="phone"
                                                 />
                                             </div>
                                         </div>
@@ -176,9 +179,23 @@
                                                 id="tinh"
                                                 class="form-control"
                                                 name="tinh"
+                                                v-model="city"
+                                                @change="getDistrict()"
                                             >
-                                                <option selected>
+                                                <option value="">
                                                     Chọn tỉnh.
+                                                </option>
+                                                <option
+                                                    v-for="(
+                                                        value, key, index
+                                                    ) in cities"
+                                                    :key="index"
+                                                    :value="{
+                                                        name: key,
+                                                        code: value.code,
+                                                    }"
+                                                >
+                                                    {{ key }}
                                                 </option>
                                             </select>
                                         </div>
@@ -188,9 +205,22 @@
                                                 id="huyen"
                                                 class="form-control"
                                                 name="huyen"
+                                                v-model="district"
+                                                @change="getWard()"
                                             >
-                                                <option selected>
+                                                <option value="">
                                                     Chọn huyện.
+                                                </option>
+                                                <option
+                                                    v-for="district in districts"
+                                                    :key="district.name"
+                                                    :value="{
+                                                        name: district.name,
+                                                        pre: district.pre,
+                                                        ward: district.ward,
+                                                    }"
+                                                >
+                                                    {{ district.name }}
                                                 </option>
                                             </select>
                                         </div>
@@ -200,9 +230,17 @@
                                                 id="xa"
                                                 class="form-control"
                                                 name="xa"
+                                                v-model="ward"
                                             >
-                                                <option selected>
+                                                <option value="">
                                                     Chọn xã.
+                                                </option>
+                                                <option
+                                                    v-for="ward in wards"
+                                                    :key="ward.name"
+                                                    :value="ward"
+                                                >
+                                                    {{ ward.name }}
                                                 </option>
                                             </select>
                                         </div>
@@ -217,6 +255,7 @@
                                             name="diachi"
                                             id="diachi"
                                             placeholder="VD: số nhà 3 ..."
+                                            v-model="address"
                                         />
                                     </div>
                                     <div class="form-group">
@@ -227,12 +266,17 @@
                                             id="thanhtoan"
                                             class="form-control"
                                             name="thanhtoan"
+                                            v-model="method"
                                         >
-                                            <option value="Chuyển khoản">
-                                                Chuyển khoản
+                                            <option value="">
+                                                Chọn phương thức.
                                             </option>
-                                            <option value="Tiền mặt">
-                                                Tiền mặt
+                                            <option
+                                                v-for="method in methods"
+                                                :key="method.id"
+                                                :value="method.id"
+                                            >
+                                                {{ method.name }}
                                             </option>
                                         </select>
                                     </div>
@@ -267,6 +311,9 @@
                                                             type="submit"
                                                             class="btn btn-primary checkout-btn"
                                                             id="dat_hang"
+                                                            @click.prevent="
+                                                                create()
+                                                            "
                                                         >
                                                             Đặt hàng
                                                         </button>
@@ -294,21 +341,51 @@
 <script setup>
 import { useCartStore } from "@/stores/cart";
 import { useProductStore } from "@/stores/product";
+import { useOrderStore } from "@/stores/order";
+import { get } from "@/services/api";
 
-import { computed, onBeforeMount } from "@vue/runtime-core";
+import { computed, onBeforeMount, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
 
 const cartStore = useCartStore();
 
 const productStore = useProductStore();
 
+const orderStore = useOrderStore();
+
 const { cart } = storeToRefs(cartStore);
 
 const { unit } = storeToRefs(productStore);
 
+const { methods } = storeToRefs(orderStore);
+
 const { getProductUnit } = productStore;
 
 const { editCart, deleteCart, getListCart } = cartStore;
+
+const { createOrder, getMethod } = orderStore;
+
+const cities = ref([]);
+
+const districts = ref([]);
+
+const wards = ref([]);
+
+const city = ref("");
+
+const district = ref("");
+
+const ward = ref("");
+
+const name = ref("");
+
+const phone = ref("");
+
+const address = ref("");
+
+const method = ref("");
+
+const isAdd = ref(false);
 
 const edit = async (item) => {
     const formData = new FormData();
@@ -324,8 +401,41 @@ const delCart = async (id) => {
     await getListCart();
 };
 
+const getCity = async () => {
+    const response = await get("/address/city");
+
+    cities.value = response.data;
+};
+
+const getDistrict = async () => {
+    const response = await get(`/address/district/${city.value.code}`);
+
+    districts.value = response.data.district;
+};
+
+const getWard = () => {
+    wards.value = district.value.ward;
+};
+
+const create = async () => {
+    const formData = new FormData();
+
+    formData.append("name", name.value);
+    formData.append("phone", phone.value);
+    formData.append("city", city.value.name);
+    formData.append("district", district.value.pre + " " + district.value.name);
+    formData.append("ward", ward.value.pre + " " + ward.value.name);
+    formData.append("address", address.value);
+    formData.append("method", method.value);
+
+    await createOrder(formData);
+};
+
 onBeforeMount(async () => {
     await getProductUnit();
+    await getCity();
+    await getMethod();
+    await getListAddress();
 });
 
 const total = computed(() => {

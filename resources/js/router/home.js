@@ -4,6 +4,8 @@ const Login = () => import("../pages/Login/Index.vue");
 const Category = () => import("../pages/Category/Index.vue");
 const Product = () => import("../pages/Product/Index.vue");
 const Cart = () => import("../pages/Cart/Index.vue");
+const Order = () => import("../pages/Order/Index.vue");
+const OrderDetail = () => import("../pages/Order/Detail.vue");
 
 const routes = [
     {
@@ -34,7 +36,25 @@ const routes = [
                 path: "cart",
                 name: "cart",
                 component: Cart,
-                requireAuth: true,
+                meta: {
+                    requireAuth: true,
+                },
+            },
+            {
+                path: "order",
+                name: "order",
+                component: Order,
+                meta: {
+                    requireAuth: true,
+                },
+            },
+            {
+                path: "order/:id",
+                name: "order-detail",
+                component: OrderDetail,
+                meta: {
+                    requireAuth: true,
+                },
             },
         ],
     },

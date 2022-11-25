@@ -106,7 +106,7 @@
                                                     box-shadow: 0px 0px 10px
                                                         #ccc;
                                                 "
-                                                :src="row.item.image"
+                                                :src="`/storage/${row.item.image}`"
                                             />
                                         </span>
                                     </center>
@@ -129,6 +129,21 @@
                                                 unit.find(
                                                     (item) =>
                                                         item.id == row.item.unit
+                                                ).name
+                                            }}
+                                        </span>
+                                    </center>
+                                </div>
+                            </template>
+                            <template #cell(status)="row">
+                                <div>
+                                    <center>
+                                        <span>
+                                            {{
+                                                status.find(
+                                                    (item) =>
+                                                        item.id ==
+                                                        row.item.status
                                                 ).name
                                             }}
                                         </span>

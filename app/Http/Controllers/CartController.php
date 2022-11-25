@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Cart\StoreRequest;
 use App\Http\Requests\Cart\UpdateRequest;
 use App\Models\Cart;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,6 +41,14 @@ class CartController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $inventory = Inventory::where('product_id', $request->product_id)->first();
+
+        if ($inventory->quantity < $request->quantity) {
+            return response()->json([
+                'message' => 'Số lượng sản phẩm trong kho không đủ',
+            ], 400);
+        }
+
         Cart::create([
             'user_id' => Auth::user()->id,
             'product_id' => $request->product_id,
@@ -79,6 +88,15 @@ class CartController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
+
+        $inventory = Inventory::where('product_id', $request->product_id)->first();
+
+        if ($inventory->quantity < $request->quantity) {
+            return response()->json([
+                'message' => 'Số lượng sản phẩm trong kho không đủ',
+            ], 400);
+        }
+
         $cart = Cart::find($id);
 
         $cart->update([
