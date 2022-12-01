@@ -51,6 +51,8 @@ class CategoryTest extends TestCase
         $response = $this->postJson('/api/admin/category', $data);
 
         $response->assertStatus($expectStatus);
+
+        $response->assertJson($expectResult);
     }
 
     /**
@@ -68,6 +70,8 @@ class CategoryTest extends TestCase
         $response = $this->putJson('/api/admin/category/' . $id, $data);
 
         $response->assertStatus($expectStatus);
+
+        $response->assertJson($expectResult);
     }
 
     /**
@@ -85,6 +89,8 @@ class CategoryTest extends TestCase
         $response = $this->deleteJson('/api/admin/category/' . $id);
 
         $response->assertStatus($expectStatus);
+
+        $response->assertJson($expectResult);
     }
 
     public function addProvider()
@@ -97,10 +103,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục không được để trống. (and 1 more error)",
                     "errors" => [
                         "name" => [
-                            "Tên không được để trống.."
+                            "Tên danh mục không được để trống."
                         ],
                         "description" => [
                             "Mô tả không được để trống."
@@ -115,10 +121,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục không được để trống.",
                     "errors" => [
                         "name" => [
-                            "Tên không được để trống."
+                            "Tên danh mục không được để trống."
                         ]
                     ]
                 ]
@@ -130,7 +136,7 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Mô tả không được để trống.",
                     "errors" => [
                         "description" => [
                             "Mô tả không được để trống."
@@ -145,10 +151,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục đã tồn tại.",
                     "errors" => [
                         "name" => [
-                            "Tên đã tồn tại."
+                            "Tên danh mục đã tồn tại."
                         ]
                     ]
                 ]
@@ -170,7 +176,10 @@ class CategoryTest extends TestCase
         return [
             "Không tồn tại" => [
                 100,
-                [],
+                [
+                    'name' => Faker::create()->name(),
+                    'description' => Faker::create()->name(),
+                ],
                 422,
                 [
                     "message" => "Không tồn tại."
@@ -184,10 +193,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục không được để trống. (and 1 more error)",
                     "errors" => [
                         "name" => [
-                            "Tên không được để trống.."
+                            "Tên danh mục không được để trống."
                         ],
                         "description" => [
                             "Mô tả không được để trống."
@@ -203,10 +212,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục không được để trống.",
                     "errors" => [
                         "name" => [
-                            "Tên không được để trống."
+                            "Tên danh mục không được để trống."
                         ]
                     ]
                 ]
@@ -219,7 +228,7 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Mô tả không được để trống.",
                     "errors" => [
                         "description" => [
                             "Mô tả không được để trống."
@@ -235,10 +244,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "The given data was invalid.",
+                    "message" => "Tên danh mục đã tồn tại.",
                     "errors" => [
                         "name" => [
-                            "Tên đã tồn tại."
+                            "Tên danh mục đã tồn tại."
                         ]
                     ]
                 ]
