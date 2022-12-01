@@ -20,12 +20,12 @@ class AuthController extends Controller
         $token = Auth::attempt($credentials);
         if (!$token) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+                'message' => 'Sai tài khoản hoặc mật khẩu.',
+            ], 422);
         }
 
         return response()->json([
+            'message' => 'Đăng nhập thành công.',
             'status' => 'success',
             'user' => [
                 "id" => Auth::user()->id,
