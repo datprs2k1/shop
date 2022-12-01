@@ -102,8 +102,7 @@ class CategoryController extends Controller
 
         if ($category == null) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Không tìm thấy danh mục.'
+                'message' => 'Không tồn tại.'
             ], 422);
         }
 
@@ -113,7 +112,6 @@ class CategoryController extends Controller
         $category->save();
 
         return response()->json([
-            'status' => 'success',
             'message' => 'Sửa thành công.'
         ], 200);
     }
@@ -131,7 +129,7 @@ class CategoryController extends Controller
         if ($category == null) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Không tìm thấy danh mục.'
+                'message' => 'Không tồn tại.'
             ], 422);
         }
 
