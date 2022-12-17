@@ -12,17 +12,46 @@
         <!-- /.container -->
     </div>
     <!-- /.breadcrumb -->
-
+    
     <div class="body-content outer-top-xs">
         <div class="container">
+            <div class="row">
+                <div class="col-md-12 bg-white">
+                    <h3>Chọn địa chỉ giao hàng</h3>
+                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
+                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
+                        <div class="infor-wrap">
+                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
+                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
+                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
+                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
+                        <div class="infor-wrap">
+                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
+                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
+                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
+                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
+                        <div class="infor-wrap">
+                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
+                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
+                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
             <div class="row">
                 <div class="shopping-cart">
                     <div class="shopping-cart-table">
                         <div class="table-responsive" id="cart">
                             <div class="col-md-12" v-if="cart.length == 0">
                                 <h3 class="cart-empty-tittle">
-                                    Giỏ hàng trống! Tiếp tục mua hàng thôi
-                                    nào!!!
+                                    Giỏ hàng trống! Tiếp tục mua hàng thôi nào!!!
                                 </h3>
                                 <div class="img-cart-wrapper">
                                     <img src="" alt="" />
