@@ -49,6 +49,7 @@ Route::get('order/method', [OrderController::class, 'getMethod']);
 Route::get('order/status', [OrderController::class, 'getStatus']);
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('account/{id}', [AuthController::class, 'changeInfo']);
     Route::resource('cart', CartController::class);
     Route::resource('order', OrderController::class);
 });

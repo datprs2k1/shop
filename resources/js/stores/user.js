@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { post } from "@/services/api";
+import { post, get } from "@/services/api";
 
 export const useUserStore = defineStore("user", {
     state: () => ({
@@ -46,6 +46,14 @@ export const useUserStore = defineStore("user", {
             this.expires_in = null;
             this.isAuthenticated = false;
         },
+
+        async info() {
+            const response = get('/user');
+            console.log(response);
+        },
+        async change(id, data) {
+            const response = await post('/account/' + id, data);
+        }
     },
     persist: true,
 });

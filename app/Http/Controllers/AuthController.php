@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\User\ChangeRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,5 +60,18 @@ class AuthController extends Controller
                 "role" => $user->getRoleNames()[0],
             ],
         ]);
+    }
+
+    public function changeInfo(ChangeRequest $request, $id)
+    {
+        $user = User::find($id);
+
+        $user->name = $request->name;
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Cập nhật thông tin thành công.'
+        ], 200);
     }
 }

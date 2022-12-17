@@ -6,6 +6,8 @@ const Product = () => import("../pages/Product/Index.vue");
 const Cart = () => import("../pages/Cart/Index.vue");
 const Order = () => import("../pages/Order/Index.vue");
 const OrderDetail = () => import("../pages/Order/Detail.vue");
+const Account = () => import("../pages/Account/index.vue");
+
 
 const routes = [
     {
@@ -56,6 +58,14 @@ const routes = [
                     requireAuth: true,
                 },
             },
+            {
+                path: "account",
+                name: "account",
+                component: Account,
+                meta: {
+                    requireAuth: true,
+                },
+            }
         ],
     },
 ];
