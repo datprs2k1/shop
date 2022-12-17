@@ -45,7 +45,6 @@ class CategoryTest extends TestCase
 
     public function test_add_category($data, $expectStatus, $expectResult)
     {
-
         $this->withHeader('Authorization', 'Bearer ' . $this->token);
 
         $response = $this->postJson('/api/admin/category', $data);
@@ -61,10 +60,8 @@ class CategoryTest extends TestCase
      * @return void
      */
 
-
     public function test_edit_category($id, $data, $expectStatus, $expectResult)
     {
-
         $this->withHeader('Authorization', 'Bearer ' . $this->token);
 
         $response = $this->putJson('/api/admin/category/' . $id, $data);
@@ -80,10 +77,8 @@ class CategoryTest extends TestCase
      * @return void
      */
 
-
     public function test_delete_category($id, $expectStatus, $expectResult)
     {
-
         $this->withHeader('Authorization', 'Bearer ' . $this->token);
 
         $response = $this->deleteJson('/api/admin/category/' . $id);
@@ -96,85 +91,76 @@ class CategoryTest extends TestCase
     public function addProvider()
     {
         return [
-            "Tên và mô tả để trống" => [
+            'Tên và mô tả để trống' => [
                 [
                     'name' => '',
                     'description' => '',
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục không được để trống. (and 1 more error)",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục không được để trống."
-                        ],
-                        "description" => [
-                            "Mô tả không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' =>
+                        'Tên danh mục không được để trống. (and 1 more error)',
+                    'errors' => [
+                        'name' => ['Tên danh mục không được để trống.'],
+                        'description' => ['Mô tả không được để trống.'],
+                    ],
+                ],
             ],
-            "Tên để trống" => [
+            'Tên để trống' => [
                 [
                     'name' => '',
                     'description' => Faker::create()->name(),
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục không được để trống.",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' => 'Tên danh mục không được để trống.',
+                    'errors' => [
+                        'name' => ['Tên danh mục không được để trống.'],
+                    ],
+                ],
             ],
-            "Mô tả để trống" => [
+            'Mô tả để trống' => [
                 [
                     'name' => Faker::create()->name(),
                     'description' => '',
                 ],
                 422,
                 [
-                    "message" => "Mô tả không được để trống.",
-                    "errors" => [
-                        "description" => [
-                            "Mô tả không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' => 'Mô tả không được để trống.',
+                    'errors' => [
+                        'description' => ['Mô tả không được để trống.'],
+                    ],
+                ],
             ],
-            "Tên đã tồn tại" => [
+            'Tên đã tồn tại' => [
                 [
-                    'name' => "Rau - Củ - Trái Cây",
+                    'name' => 'Rau - Củ - Trái Cây',
                     'description' => Faker::create()->name(),
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục đã tồn tại.",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục đã tồn tại."
-                        ]
-                    ]
-                ]
+                    'message' => 'Tên danh mục đã tồn tại.',
+                    'errors' => [
+                        'name' => ['Tên danh mục đã tồn tại.'],
+                    ],
+                ],
             ],
-            "Thêm thành công" => [
+            'Thêm thành công' => [
                 [
                     'name' => Faker::create()->name(),
                     'description' => Faker::create()->name(),
                 ],
                 200,
                 [
-                    "message" => "Thêm thành công."
-                ]
-            ]
+                    'message' => 'Thêm thành công.',
+                ],
+            ],
         ];
     }
     public function editProvider()
     {
         return [
-            "Không tồn tại" => [
+            'Không tồn tại' => [
                 100,
                 [
                     'name' => Faker::create()->name(),
@@ -182,10 +168,10 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "Không tồn tại."
-                ]
+                    'message' => 'Không tồn tại.',
+                ],
             ],
-            "Tên và mô tả để trống" => [
+            'Tên và mô tả để trống' => [
                 1,
                 [
                     'name' => '',
@@ -193,18 +179,15 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục không được để trống. (and 1 more error)",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục không được để trống."
-                        ],
-                        "description" => [
-                            "Mô tả không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' =>
+                        'Tên danh mục không được để trống. (and 1 more error)',
+                    'errors' => [
+                        'name' => ['Tên danh mục không được để trống.'],
+                        'description' => ['Mô tả không được để trống.'],
+                    ],
+                ],
             ],
-            "Tên để trống" => [
+            'Tên để trống' => [
                 1,
                 [
                     'name' => '',
@@ -212,15 +195,13 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục không được để trống.",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' => 'Tên danh mục không được để trống.',
+                    'errors' => [
+                        'name' => ['Tên danh mục không được để trống.'],
+                    ],
+                ],
             ],
-            "Mô tả để trống" => [
+            'Mô tả để trống' => [
                 1,
                 [
                     'name' => Faker::create()->name(),
@@ -228,31 +209,27 @@ class CategoryTest extends TestCase
                 ],
                 422,
                 [
-                    "message" => "Mô tả không được để trống.",
-                    "errors" => [
-                        "description" => [
-                            "Mô tả không được để trống."
-                        ]
-                    ]
-                ]
+                    'message' => 'Mô tả không được để trống.',
+                    'errors' => [
+                        'description' => ['Mô tả không được để trống.'],
+                    ],
+                ],
             ],
-            "Tên đã tồn tại" => [
+            'Tên đã tồn tại' => [
                 1,
                 [
-                    'name' => "Thịt - Trứng - Hải Sản",
+                    'name' => 'Thịt - Trứng - Hải Sản',
                     'description' => Faker::create()->name(),
                 ],
                 422,
                 [
-                    "message" => "Tên danh mục đã tồn tại.",
-                    "errors" => [
-                        "name" => [
-                            "Tên danh mục đã tồn tại."
-                        ]
-                    ]
-                ]
+                    'message' => 'Tên danh mục đã tồn tại.',
+                    'errors' => [
+                        'name' => ['Tên danh mục đã tồn tại.'],
+                    ],
+                ],
             ],
-            "Sửa thành công" => [
+            'Sửa thành công' => [
                 1,
                 [
                     'name' => Faker::create()->name(),
@@ -260,30 +237,29 @@ class CategoryTest extends TestCase
                 ],
                 200,
                 [
-                    "message" => "Sửa thành công."
-                ]
-            ]
+                    'message' => 'Sửa thành công.',
+                ],
+            ],
         ];
     }
 
     public function deleteProvider()
     {
         return [
-            "Không tồn tại" => [
+            'Không tồn tại' => [
                 100,
                 422,
                 [
-                    "message" => "Không tồn tại."
-                ]
+                    'message' => 'Không tồn tại.',
+                ],
             ],
-            "Xoá thành công" => [
+            'Xoá thành công' => [
                 1,
                 200,
                 [
-                    "message" => "Xoá thành công."
-                ]
-            ]
+                    'message' => 'Xoá thành công.',
+                ],
+            ],
         ];
     }
 }
-âbdkasbd
