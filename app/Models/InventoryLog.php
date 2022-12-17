@@ -12,6 +12,7 @@ class InventoryLog extends Model
     protected $fillable = [
         'inventory_id',
         'quantity',
+        'remain',
         'status'
     ];
 }

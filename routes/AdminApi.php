@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReportController;
@@ -57,5 +58,12 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/report/month', 'doanhthutrong30ngay');
         Route::get('/report/year', 'doanhthutrong12thang');
         Route::get('/report/product', 'sanpham');
+    });
+
+    Route::controller(InventoryController::class)->group(function () {
+        Route::get('/inventory/status', 'getStatus');
+        Route::get('/inventory/logstatus', 'getLogStatus');
+        Route::get('/inventory', 'index');
+        Route::get('/inventory/{id}', 'show');
     });
 });

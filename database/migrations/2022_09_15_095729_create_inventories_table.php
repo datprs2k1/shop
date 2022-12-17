@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreignId('supplier_id')->constrained()->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->integer('quantity');
             $table->tinyInteger('status')->default(0);
             $table->softDeletes();

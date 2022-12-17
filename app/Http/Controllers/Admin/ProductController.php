@@ -76,6 +76,7 @@ class ProductController extends Controller
 
 
         $product->inventory()->create([
+            'supplier_id' => $request->supplier_id,
             'quantity' => $request->quantity,
         ]);
 
@@ -155,6 +156,7 @@ class ProductController extends Controller
 
 
         $product->inventory()->create([
+            'supplier_id' => $request->supplier_id,
             'quantity' => $request->quantity,
         ]);
 

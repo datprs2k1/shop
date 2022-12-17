@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('inventory_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->integer('quantity');
+            $table->integer('remain');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

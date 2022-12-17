@@ -5,6 +5,7 @@ const Category = () => import("../admin/Category/Index.vue");
 const Supplier = () => import("../admin/Supplier/Index.vue");
 const Product = () => import("../admin/Product/Index.vue");
 const Order = () => import("../admin/Order/Index.vue");
+const Inventory = () => import("../admin/Inventory/Index.vue");
 
 const routes = [
     {
@@ -65,6 +66,16 @@ const routes = [
                 component: Order,
                 meta: {
                     title: "Danh sách đơn hàng",
+                    requireAuth: true,
+                    role: "Admin",
+                },
+            },
+            {
+                path: "inventory",
+                name: "admin.inventory",
+                component: Inventory,
+                meta: {
+                    title: "Kho hàng",
                     requireAuth: true,
                     role: "Admin",
                 },

@@ -12,38 +12,211 @@
         <!-- /.container -->
     </div>
     <!-- /.breadcrumb -->
-    
+
     <div class="body-content outer-top-xs">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 bg-white">
                     <h3>Chọn địa chỉ giao hàng</h3>
-                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
-                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
-                        <div class="infor-wrap">
-                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
-                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
-                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="ten_nguoi_nhan"
+                                    >Tên người nhận:
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="ten_nguoi_nhan"
+                                    id="ten_nguoi_nhan"
+                                    placeholder="Nguyen Văn A"
+                                    v-model="name"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="so_dien_thoai"
+                                    >Số điện thoại:
+                                </label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="so_dien_thoai"
+                                    id="so_dien_thoai"
+                                    maxlength="10"
+                                    v-model="phone"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
-                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
-                        <div class="infor-wrap">
-                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
-                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
-                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="tinh">Tỉnh</label>
+                            <select
+                                id="tinh"
+                                class="form-control"
+                                name="tinh"
+                                v-model="city"
+                                @change="getDistrict()"
+                            >
+                                <option value="">Chọn tỉnh.</option>
+                                <option
+                                    v-for="(value, key, index) in cities"
+                                    :key="index"
+                                    :value="{
+                                        name: key,
+                                        code: value.code,
+                                    }"
+                                >
+                                    {{ key }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="huyen">Huyện</label>
+                            <select
+                                id="huyen"
+                                class="form-control"
+                                name="huyen"
+                                v-model="district"
+                                @change="getWard()"
+                            >
+                                <option value="">Chọn huyện.</option>
+                                <option
+                                    v-for="district in districts"
+                                    :key="district.name"
+                                    :value="{
+                                        name: district.name,
+                                        pre: district.pre,
+                                        ward: district.ward,
+                                    }"
+                                >
+                                    {{ district.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="xa">Xã</label>
+                            <select
+                                id="xa"
+                                class="form-control"
+                                name="xa"
+                                v-model="ward"
+                            >
+                                <option value="">Chọn xã.</option>
+                                <option
+                                    v-for="ward in wards"
+                                    :key="ward.name"
+                                    :value="ward"
+                                >
+                                    {{ ward.name }}
+                                </option>
+                            </select>
                         </div>
                     </div>
-                    <div style="display: flex; align-item:center; margin-bottom: 10px;">
-                        <input type="radio" value="" name="dia_chi" style="margin-right: 20px">
+                    <div class="form-group">
+                        <label for="xa-phuong:">Địa chỉ nhận mong muốn: </label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="diachi"
+                            id="diachi"
+                            placeholder="VD: số nhà 3 ..."
+                            v-model="address"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="thanhtoan">Phương thức thanh toán</label>
+                        <select
+                            id="thanhtoan"
+                            class="form-control"
+                            name="thanhtoan"
+                            v-model="method"
+                        >
+                            <option value="">Chọn phương thức.</option>
+                            <option
+                                v-for="method in methods"
+                                :key="method.id"
+                                :value="method.id"
+                            >
+                                {{ method.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            align-item: center;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        <input
+                            type="radio"
+                            value=""
+                            name="dia_chi"
+                            style="margin-right: 20px"
+                        />
                         <div class="infor-wrap">
-                            <span style="font-size: 16px"><b>Nguyễn Thế Văn</b></span><br>
-                            <span style="font-size: 14px">SĐT: 0123454789</span> <br>
-                            <span style="font-size: 14px">Địa chỉ: Thái Thụy - Thái Bình</span>
+                            <span style="font-size: 16px"
+                                ><b>Nguyễn Thế Văn</b></span
+                            ><br />
+                            <span style="font-size: 14px">SĐT: 0123454789</span>
+                            <br />
+                            <span style="font-size: 14px"
+                                >Địa chỉ: Thái Thụy - Thái Bình</span
+                            >
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            align-item: center;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        <input
+                            type="radio"
+                            value=""
+                            name="dia_chi"
+                            style="margin-right: 20px"
+                        />
+                        <div class="infor-wrap">
+                            <span style="font-size: 16px"
+                                ><b>Nguyễn Thế Văn</b></span
+                            ><br />
+                            <span style="font-size: 14px">SĐT: 0123454789</span>
+                            <br />
+                            <span style="font-size: 14px"
+                                >Địa chỉ: Thái Thụy - Thái Bình</span
+                            >
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            align-item: center;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        <input
+                            type="radio"
+                            value=""
+                            name="dia_chi"
+                            style="margin-right: 20px"
+                        />
+                        <div class="infor-wrap">
+                            <span style="font-size: 16px"
+                                ><b>Nguyễn Thế Văn</b></span
+                            ><br />
+                            <span style="font-size: 14px">SĐT: 0123454789</span>
+                            <br />
+                            <span style="font-size: 14px"
+                                >Địa chỉ: Thái Thụy - Thái Bình</span
+                            >
                         </div>
                     </div>
                 </div>
-                
             </div>
             <div class="row">
                 <div class="shopping-cart">
@@ -51,7 +224,8 @@
                         <div class="table-responsive" id="cart">
                             <div class="col-md-12" v-if="cart.length == 0">
                                 <h3 class="cart-empty-tittle">
-                                    Giỏ hàng trống! Tiếp tục mua hàng thôi nào!!!
+                                    Giỏ hàng trống! Tiếp tục mua hàng thôi
+                                    nào!!!
                                 </h3>
                                 <div class="img-cart-wrapper">
                                     <img src="" alt="" />
@@ -163,153 +337,7 @@
                             </table>
                             <!-- /table -->
                             <div class="row">
-                                <div
-                                    class="col-md-8 address-form"
-                                    style="height: 300px"
-                                >
-                                    <h5>Vui lòng chọn địa chỉ giao hàng.</h5>
-
-                                    <div class="row">
-                                        <div class="col-md-7">
-                                            <div class="form-group">
-                                                <label for="ten_nguoi_nhan"
-                                                    >Tên người nhận:
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    name="ten_nguoi_nhan"
-                                                    id="ten_nguoi_nhan"
-                                                    placeholder="Nguyen Văn A"
-                                                    v-model="name"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-5">
-                                            <div class="form-group">
-                                                <label for="so_dien_thoai"
-                                                    >Số điện thoại:
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    name="so_dien_thoai"
-                                                    id="so_dien_thoai"
-                                                    maxlength="10"
-                                                    v-model="phone"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label for="tinh">Tỉnh</label>
-                                            <select
-                                                id="tinh"
-                                                class="form-control"
-                                                name="tinh"
-                                                v-model="city"
-                                                @change="getDistrict()"
-                                            >
-                                                <option value="">
-                                                    Chọn tỉnh.
-                                                </option>
-                                                <option
-                                                    v-for="(
-                                                        value, key, index
-                                                    ) in cities"
-                                                    :key="index"
-                                                    :value="{
-                                                        name: key,
-                                                        code: value.code,
-                                                    }"
-                                                >
-                                                    {{ key }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="huyen">Huyện</label>
-                                            <select
-                                                id="huyen"
-                                                class="form-control"
-                                                name="huyen"
-                                                v-model="district"
-                                                @change="getWard()"
-                                            >
-                                                <option value="">
-                                                    Chọn huyện.
-                                                </option>
-                                                <option
-                                                    v-for="district in districts"
-                                                    :key="district.name"
-                                                    :value="{
-                                                        name: district.name,
-                                                        pre: district.pre,
-                                                        ward: district.ward,
-                                                    }"
-                                                >
-                                                    {{ district.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="xa">Xã</label>
-                                            <select
-                                                id="xa"
-                                                class="form-control"
-                                                name="xa"
-                                                v-model="ward"
-                                            >
-                                                <option value="">
-                                                    Chọn xã.
-                                                </option>
-                                                <option
-                                                    v-for="ward in wards"
-                                                    :key="ward.name"
-                                                    :value="ward"
-                                                >
-                                                    {{ ward.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="xa-phuong:"
-                                            >Địa chỉ nhận mong muốn:
-                                        </label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="diachi"
-                                            id="diachi"
-                                            placeholder="VD: số nhà 3 ..."
-                                            v-model="address"
-                                        />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="thanhtoan"
-                                            >Phương thức thanh toán</label
-                                        >
-                                        <select
-                                            id="thanhtoan"
-                                            class="form-control"
-                                            name="thanhtoan"
-                                            v-model="method"
-                                        >
-                                            <option value="">
-                                                Chọn phương thức.
-                                            </option>
-                                            <option
-                                                v-for="method in methods"
-                                                :key="method.id"
-                                                :value="method.id"
-                                            >
-                                                {{ method.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <div class="col-md-8"></div>
                                 <div
                                     class="col-md-4 col-sm-12 cart-shopping-total"
                                     style="height: 300px"

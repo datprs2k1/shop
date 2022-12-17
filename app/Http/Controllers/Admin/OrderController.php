@@ -100,6 +100,7 @@ class OrderController extends Controller
 
             $inventory->logs()->create([
                 'quantity' => $product->pivot->quantity,
+                'remain' => $inventory->quantity,
                 'status' => 1
             ]);
 
@@ -130,6 +131,7 @@ class OrderController extends Controller
 
             $inventory->logs()->create([
                 'quantity' => $product->pivot->quantity,
+                'remain' => $inventory->quantity,
                 'status' => 2
             ]);
         }

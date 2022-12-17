@@ -11,13 +11,19 @@ class Inventory extends Model
 
     protected $fillable = [
         'product_id',
+        'supplier_id',
         'quantity',
         'status'
     ];
 
     public function product()
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     protected $casts = [
