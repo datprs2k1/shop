@@ -33,6 +33,6 @@ class Inventory extends Model
 
     public function logs()
     {
-        return $this->hasMany(InventoryLog::class);
+        return $this->hasMany(InventoryLog::class)->orderBy('created_at', 'desc');
     }
 }

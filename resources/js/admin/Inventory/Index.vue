@@ -113,6 +113,9 @@
                 </b-col>
             </b-row>
             <b-table striped hover :items="inventory.logs" :fields="logFileds">
+                <template #cell(index)="row">
+                    {{ row.index + 1 }}
+                </template>
                 <template #cell(product)>
                     {{ inventory.product.name }}
                 </template>
@@ -182,8 +185,8 @@ const fields = ref([
 
 const logFileds = ref([
     {
-        key: "id",
-        label: "ID",
+        key: "index",
+        label: "STT",
         class: "text-center",
     },
     {

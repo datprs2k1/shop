@@ -16,13 +16,11 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('address1');
-            $table->string('address2')->nullable();
+            $table->string('address');
             $table->string('city');
             $table->string('ward');
             $table->string('district');
             $table->string('phone');
-            $table->string('email');
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->timestamps();

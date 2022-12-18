@@ -126,7 +126,6 @@
                                                         class="soluong_input"
                                                         type="number"
                                                         name="so_luong"
-                                                        value="1"
                                                         min="1"
                                                         v-model="quantity"
                                                     />

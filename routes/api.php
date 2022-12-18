@@ -52,4 +52,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('account/{id}', [AuthController::class, 'changeInfo']);
     Route::resource('cart', CartController::class);
     Route::resource('order', OrderController::class);
+    Route::controller(AddressController::class)->group(function () {
+        Route::get('address', 'index');
+        Route::post('address', 'store');
+    });
 });

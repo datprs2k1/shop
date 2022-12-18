@@ -19,16 +19,16 @@
                 <div class="address">
                     <h3>Địa chỉ nhận hàng</h3>
                     <p class="nguoinhan">
-                        <strong>Người nhận: {{ order.name }}</strong>
+                        <strong>Người nhận: {{ order.address.name }}</strong>
                     </p>
-                    <p>Số điện thoại: {{ order.phone }}</p>
+                    <p>Số điện thoại: {{ order.address.phone }}</p>
                     <p>Địa chỉ nhận hàng tại:</p>
                     <p>
-                        {{ order.ward }}, {{ order.district }},
-                        {{ order.city }}
+                        {{ order.address.ward }}, {{ order.address.district }},
+                        {{ order.address.city }}
                     </p>
                     <p>
-                        {{ order.address }}
+                        {{ order.address.address }}
                     </p>
                 </div>
             </div>
@@ -86,8 +86,14 @@
                                             <h4
                                                 class="cart-product-description"
                                             >
-                                                <a href=""
-                                                    ><b>{{ item.name }}</b></a
+                                                <router-link
+                                                    :to="{
+                                                        name: 'product',
+                                                        params: { id: item.id },
+                                                    }"
+                                                    ><b>{{
+                                                        item.name
+                                                    }}</b></router-link
                                                 >
                                             </h4>
                                         </td>

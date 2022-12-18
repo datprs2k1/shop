@@ -111,9 +111,14 @@ const menu = [
         link: "admin.product",
     },
     {
-        name: "Quan lý đơn hàng",
+        name: "Quản lý đơn hàng",
         icon: "nav-icon fas fa-warehouse",
         link: "admin.order",
+    },
+    {
+        name: "Quản lý kho",
+        icon: "nav-icon fas fa-warehouse",
+        link: "admin.inventory",
     },
 ];
 

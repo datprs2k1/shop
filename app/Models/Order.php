@@ -12,12 +12,7 @@ class Order extends Model
     protected $fillable = [
         'total',
         'status',
-        'name',
-        'address',
-        'ward',
-        'district',
-        'city',
-        'phone',
+        'address_id',
         'method'
     ];
 
@@ -29,5 +24,10 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')->withPivot('quantity');
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }

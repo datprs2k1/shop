@@ -52,12 +52,7 @@ class OrderController extends Controller
 
         $order = new Order();
         $order->user_id = auth()->id();
-        $order->name = $request->name;
-        $order->phone = $request->phone;
-        $order->address = $request->address;
-        $order->ward = $request->ward;
-        $order->district = $request->district;
-        $order->city = $request->city;
+        $order->address_id = $request->address_id;
         $order->method = $request->method;
         $order->total = $total;
         $order->save();
@@ -75,7 +70,8 @@ class OrderController extends Controller
         Cart::where('user_id', auth()->id())->delete();
 
         return response()->json([
-            'message' => 'Order successfully created'
+            'message' => 'Đặt hàng thành công.',
+            'order_id' => $order->id,
         ]);
     }
 
@@ -87,7 +83,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $data = Order::with('products')->where('user_id', auth()->id())->where('id', $id)->first();
+        $data = Order::with('products', 'address')->where('user_id', auth()->id())->where('id', $id)->first();
 
         return response()->json($data, 200);
     }

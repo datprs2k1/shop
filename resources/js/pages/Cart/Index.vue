@@ -18,114 +18,171 @@
             <div class="row">
                 <div class="col-md-12 bg-white">
                     <h3>Chọn địa chỉ giao hàng</h3>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <label for="ten_nguoi_nhan"
-                                    >Tên người nhận:
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    name="ten_nguoi_nhan"
-                                    id="ten_nguoi_nhan"
-                                    placeholder="Nguyen Văn A"
-                                    v-model="name"
-                                />
+
+                    <div class="" v-if="addresses.length > 0">
+                        <div
+                            style="
+                                display: flex;
+                                align-item: center;
+                                margin-bottom: 10px;
+                            "
+                            v-for="address in addresses"
+                            :key="address.id"
+                        >
+                            <input
+                                type="radio"
+                                :value="address.id"
+                                v-model="address_id"
+                                style="margin-right: 20px"
+                            />
+                            <div class="infor-wrap">
+                                <span style="font-size: 16px"
+                                    ><b>{{ address.name }}</b></span
+                                ><br />
+                                <span style="font-size: 14px"
+                                    >SĐT: {{ address.phone }}</span
+                                >
+                                <br />
+                                <span style="font-size: 14px"
+                                    >Địa chỉ: {{ address.address }} -
+                                    {{ address.ward }} -
+                                    {{ address.district }} -
+                                    {{ address.city }}</span
+                                >
                             </div>
                         </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="so_dien_thoai"
-                                    >Số điện thoại:
-                                </label>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    name="so_dien_thoai"
-                                    id="so_dien_thoai"
-                                    maxlength="10"
-                                    v-model="phone"
-                                />
+                    </div>
+                    <span>
+                        <button
+                            class="btn btn-upper btn-primary"
+                            @click="isAdd = true"
+                        >
+                            Thêm địa chỉ
+                        </button>
+                    </span>
+                    <div v-if="isAdd">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label for="ten_nguoi_nhan"
+                                        >Tên người nhận:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="ten_nguoi_nhan"
+                                        id="ten_nguoi_nhan"
+                                        placeholder="Nguyen Văn A"
+                                        v-model="name"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="so_dien_thoai"
+                                        >Số điện thoại:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="so_dien_thoai"
+                                        id="so_dien_thoai"
+                                        v-model="phone"
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label for="tinh">Tỉnh</label>
-                            <select
-                                id="tinh"
-                                class="form-control"
-                                name="tinh"
-                                v-model="city"
-                                @change="getDistrict()"
-                            >
-                                <option value="">Chọn tỉnh.</option>
-                                <option
-                                    v-for="(value, key, index) in cities"
-                                    :key="index"
-                                    :value="{
-                                        name: key,
-                                        code: value.code,
-                                    }"
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="tinh">Tỉnh</label>
+                                <select
+                                    id="tinh"
+                                    class="form-control"
+                                    name="tinh"
+                                    v-model="city"
+                                    @change="getDistrict()"
                                 >
-                                    {{ key }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="huyen">Huyện</label>
-                            <select
-                                id="huyen"
-                                class="form-control"
-                                name="huyen"
-                                v-model="district"
-                                @change="getWard()"
-                            >
-                                <option value="">Chọn huyện.</option>
-                                <option
-                                    v-for="district in districts"
-                                    :key="district.name"
-                                    :value="{
-                                        name: district.name,
-                                        pre: district.pre,
-                                        ward: district.ward,
-                                    }"
+                                    <option value="">Chọn tỉnh.</option>
+                                    <option
+                                        v-for="(value, key, index) in cities"
+                                        :key="index"
+                                        :value="{
+                                            name: key,
+                                            code: value.code,
+                                        }"
+                                    >
+                                        {{ key }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="huyen">Huyện</label>
+                                <select
+                                    id="huyen"
+                                    class="form-control"
+                                    name="huyen"
+                                    v-model="district"
+                                    @change="getWard()"
                                 >
-                                    {{ district.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="xa">Xã</label>
-                            <select
-                                id="xa"
-                                class="form-control"
-                                name="xa"
-                                v-model="ward"
-                            >
-                                <option value="">Chọn xã.</option>
-                                <option
-                                    v-for="ward in wards"
-                                    :key="ward.name"
-                                    :value="ward"
+                                    <option value="">Chọn huyện.</option>
+                                    <option
+                                        v-for="district in districts"
+                                        :key="district.name"
+                                        :value="{
+                                            name: district.name,
+                                            pre: district.pre,
+                                            ward: district.ward,
+                                        }"
+                                    >
+                                        {{ district.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="xa">Xã</label>
+                                <select
+                                    id="xa"
+                                    class="form-control"
+                                    name="xa"
+                                    v-model="ward"
                                 >
-                                    {{ ward.name }}
-                                </option>
-                            </select>
+                                    <option value="">Chọn xã.</option>
+                                    <option
+                                        v-for="ward in wards"
+                                        :key="ward.name"
+                                        :value="ward"
+                                    >
+                                        {{ ward.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="xa-phuong:"
+                                >Địa chỉ nhận mong muốn:
+                            </label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="diachi"
+                                id="diachi"
+                                placeholder="VD: số nhà 3 ..."
+                                v-model="address"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <span class="">
+                                <button
+                                    class="btn btn-upper btn-primary"
+                                    @click="addAdd"
+                                >
+                                    Thêm
+                                </button>
+                            </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="xa-phuong:">Địa chỉ nhận mong muốn: </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="diachi"
-                            id="diachi"
-                            placeholder="VD: số nhà 3 ..."
-                            v-model="address"
-                        />
-                    </div>
+
                     <div class="form-group">
                         <label for="thanhtoan">Phương thức thanh toán</label>
                         <select
@@ -143,78 +200,6 @@
                                 {{ method.name }}
                             </option>
                         </select>
-                    </div>
-                    <div
-                        style="
-                            display: flex;
-                            align-item: center;
-                            margin-bottom: 10px;
-                        "
-                    >
-                        <input
-                            type="radio"
-                            value=""
-                            name="dia_chi"
-                            style="margin-right: 20px"
-                        />
-                        <div class="infor-wrap">
-                            <span style="font-size: 16px"
-                                ><b>Nguyễn Thế Văn</b></span
-                            ><br />
-                            <span style="font-size: 14px">SĐT: 0123454789</span>
-                            <br />
-                            <span style="font-size: 14px"
-                                >Địa chỉ: Thái Thụy - Thái Bình</span
-                            >
-                        </div>
-                    </div>
-                    <div
-                        style="
-                            display: flex;
-                            align-item: center;
-                            margin-bottom: 10px;
-                        "
-                    >
-                        <input
-                            type="radio"
-                            value=""
-                            name="dia_chi"
-                            style="margin-right: 20px"
-                        />
-                        <div class="infor-wrap">
-                            <span style="font-size: 16px"
-                                ><b>Nguyễn Thế Văn</b></span
-                            ><br />
-                            <span style="font-size: 14px">SĐT: 0123454789</span>
-                            <br />
-                            <span style="font-size: 14px"
-                                >Địa chỉ: Thái Thụy - Thái Bình</span
-                            >
-                        </div>
-                    </div>
-                    <div
-                        style="
-                            display: flex;
-                            align-item: center;
-                            margin-bottom: 10px;
-                        "
-                    >
-                        <input
-                            type="radio"
-                            value=""
-                            name="dia_chi"
-                            style="margin-right: 20px"
-                        />
-                        <div class="infor-wrap">
-                            <span style="font-size: 16px"
-                                ><b>Nguyễn Thế Văn</b></span
-                            ><br />
-                            <span style="font-size: 14px">SĐT: 0123454789</span>
-                            <br />
-                            <span style="font-size: 14px"
-                                >Địa chỉ: Thái Thụy - Thái Bình</span
-                            >
-                        </div>
                     </div>
                 </div>
             </div>
@@ -399,10 +384,16 @@
 import { useCartStore } from "@/stores/cart";
 import { useProductStore } from "@/stores/product";
 import { useOrderStore } from "@/stores/order";
+import { useAddressStore } from "../../stores/address";
 import { get } from "@/services/api";
+import Swal from "sweetalert2";
 
 import { computed, onBeforeMount, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
+
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const cartStore = useCartStore();
 
@@ -410,17 +401,23 @@ const productStore = useProductStore();
 
 const orderStore = useOrderStore();
 
+const addressStore = useAddressStore();
+
 const { cart } = storeToRefs(cartStore);
 
 const { unit } = storeToRefs(productStore);
 
 const { methods } = storeToRefs(orderStore);
 
+const { addresses } = storeToRefs(addressStore);
+
 const { getProductUnit } = productStore;
 
 const { editCart, deleteCart, getListCart } = cartStore;
 
 const { createOrder, getMethod } = orderStore;
+
+const { getListAddress, addAddress } = addressStore;
 
 const cities = ref([]);
 
@@ -441,6 +438,8 @@ const phone = ref("");
 const address = ref("");
 
 const method = ref("");
+
+const address_id = ref("");
 
 const isAdd = ref(false);
 
@@ -477,15 +476,46 @@ const getWard = () => {
 const create = async () => {
     const formData = new FormData();
 
+    formData.append("address_id", address_id.value);
+    formData.append("method", method.value);
+
+    try {
+        const response = await createOrder(formData);
+
+        Swal.fire({
+            title: "Thành công",
+            text: response.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+
+        router.push({
+            name: "order-detail",
+            params: { id: response.order_id },
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const addAdd = async () => {
+    const formData = new FormData();
+
     formData.append("name", name.value);
     formData.append("phone", phone.value);
     formData.append("city", city.value.name);
     formData.append("district", district.value.pre + " " + district.value.name);
     formData.append("ward", ward.value.pre + " " + ward.value.name);
     formData.append("address", address.value);
-    formData.append("method", method.value);
 
-    await createOrder(formData);
+    try {
+        await addAddress(formData);
+        await getListAddress();
+
+        isAdd.value = false;
+    } catch (error) {}
 };
 
 onBeforeMount(async () => {

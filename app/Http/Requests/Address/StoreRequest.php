@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Order;
+namespace App\Http\Requests\Address;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,16 +24,24 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'address_id' => 'required|integer|exists:addresses,id',
-            'method' => 'required|integer',
+            'name' => 'required|string',
+            'city' => 'required|string',
+            'district' => 'required|string',
+            'ward' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|regex:/(0)[0-9]{9}/|min:10',
         ];
     }
 
     public function attributes()
     {
         return [
-            'address_id' => 'Địa chỉ',
-            'method' => 'Phương thức thanh toán',
+            'name' => 'Tên',
+            'city' => 'Thành phố',
+            'district' => 'Quận',
+            'ward' => 'Phường',
+            'address' => 'Địa chỉ',
+            'phone' => 'Số điện thoại',
         ];
     }
 
@@ -42,7 +50,8 @@ class StoreRequest extends FormRequest
         return [
             'required' => ':attribute không được để trống',
             'integer' => ':attribute phải là số nguyên',
-            'exists' => ':attribute không tồn tại',
+            'min' => ':attribute phải có :min chữ số',
+            'regex' => ':attribute không hợp lệ',
         ];
     }
 }
