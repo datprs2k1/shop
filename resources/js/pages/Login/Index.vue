@@ -28,7 +28,7 @@
                     <div class="col-md-6 col-sm-6 sign-in">
                         <h4 class="">Đăng nhập</h4>
                         <p class="">
-                            Xin chào, Vui lòng đăng nhập tài khoản của bạn.
+                            bac, Vui lòng đăng nhập tài khoản của bạn.
                         </p>
                         <form class="register-form outer-top-xs" role="form">
                             <div class="form-group">
