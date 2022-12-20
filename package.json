@@ -13,6 +13,8 @@
         "vite": "^3.0.0"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^35.4.0",
+        "@ckeditor/ckeditor5-vue": "^4.0.1",
         "@popperjs/core": "^2.11.6",
         "@vitejs/plugin-vue": "^3.0.3",
         "admin-lte": "3.2",

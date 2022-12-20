@@ -10,20 +10,21 @@
                     <div class="cnt-account">
                         <ul class="list-unstyled">
                             <li v-show="isAuthenticated">
-                                <a href=""
-                                    ><i class="icon fa fa-user"></i>Tài khoản</a
+                                <router-link :to="{ name: 'account' }"
+                                    ><i class="icon fa fa-user"></i>Tài
+                                    khoản</router-link
                                 >
                             </li>
                             <li v-show="isAuthenticated">
-                                <a href=""
+                                <router-link :to="{ name: 'cart' }"
                                     ><i class="icon fa fa-shopping-cart"></i>Giỏ
-                                    hàng</a
+                                    hàng</router-link
                                 >
                             </li>
                             <li v-show="isAuthenticated">
-                                <a href=""
+                                <router-link :to="{ name: 'order' }"
                                     ><i class="icon fa fa-list-alt"></i>Hoá
-                                    đơn</a
+                                    đơn</router-link
                                 >
                             </li>
                             <li v-show="isAuthenticated">
@@ -33,9 +34,9 @@
                                 >
                             </li>
                             <li>
-                                <a href=""
+                                <router-link :to="{ name: 'cart' }"
                                     ><i class="icon fa fa-shopping-cart"></i>Giỏ
-                                    hàng</a
+                                    hàng</router-link
                                 >
                             </li>
                             <li>
@@ -107,6 +108,7 @@
                                     <input
                                         class="search-field"
                                         name="tim-kiem"
+                                        v-model="keyword"
                                         placeholder="Nhập tên sản phẩm để tìm kiếm..."
                                     />
                                     <button
@@ -114,8 +116,59 @@
                                         name="search-btn"
                                         class="search-button"
                                         id="btn-tim-kiem"
+                                        @click.prevent="search"
                                     ></button>
-                                    <div id="ket-qua"></div>
+                                    <div id="ket-qua" v-show="result != null">
+                                        <ul
+                                            class="dropdown-menu"
+                                            style="
+                                                display: block;
+                                                position: absolute;
+                                                width: 100%;
+                                                max-height: 500px;
+                                                overflow: scroll;
+                                            "
+                                        >
+                                            <li
+                                                class="dropdown-item"
+                                                v-for="product in result"
+                                                :key="product.id"
+                                            >
+                                                <router-link
+                                                    :to="{
+                                                        name: 'product',
+                                                        params: {
+                                                            id: product.id,
+                                                        },
+                                                    }"
+                                                >
+                                                    <img
+                                                        :src="`storage/${product.image}`"
+                                                        width="100px"
+                                                        height="100px"
+                                                    />
+                                                    <span
+                                                        style="
+                                                            margin-left: 50px;
+                                                            width: 200px;
+                                                        "
+                                                        >{{
+                                                            product.name
+                                                        }}</span
+                                                    >
+                                                    <span
+                                                        style="
+                                                            margin-left: 50px;
+                                                            width: 50px;
+                                                        "
+                                                        >{{
+                                                            product.price
+                                                        }}</span
+                                                    >
+                                                </router-link>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -309,6 +362,7 @@ import { useUserStore } from "@/stores/user";
 import { computed, onBeforeMount, onMounted, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { post } from "@/services/api";
 import Swal from "sweetalert2";
 
 const store = useCategoryStore();
@@ -332,6 +386,10 @@ const { getListCategoryHome } = store;
 const { getListCart, deleteCart } = cartStore;
 
 const isActived = ref(false);
+
+const keyword = ref("");
+
+const result = ref(null);
 
 const total = computed(() => {
     let total = 0;
@@ -365,6 +423,17 @@ const logoutUser = async () => {
             showConfirmButton: false,
             timer: 1500,
         });
+    }
+};
+
+const search = async () => {
+    if (keyword.value != "") {
+        const response = await post("/search", {
+            keyword: keyword.value,
+        });
+        result.value = response.data;
+    } else {
+        result.value = null;
     }
 };
 

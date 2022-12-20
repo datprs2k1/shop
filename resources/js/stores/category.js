@@ -17,14 +17,20 @@ export const useCategoryStore = defineStore("category", {
     actions: {
         async addCategory(data) {
             const response = await post("/admin/category", data);
+
+            return response;
         },
 
         async editCategory(id, data) {
             const response = await post("/admin/category/" + id, data);
+
+            return response;
         },
 
         async deleteCategory(id) {
             const response = await del("/admin/category/" + id);
+
+            return response;
         },
 
         async getListCategory(url = `/admin/category/`) {
@@ -41,10 +47,14 @@ export const useCategoryStore = defineStore("category", {
 
         async deleteTrash(id) {
             const response = await del(`/admin/category/trash/` + id);
+
+            return response;
         },
 
         async restoreFromTrash(id) {
             const response = await put(`/admin/category/trash/restore/` + id);
+
+            return response;
         },
 
         async getListCategoryHome() {

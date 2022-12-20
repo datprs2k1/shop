@@ -4,6 +4,7 @@ namespace App\Http\Requests\User;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ChangeRequest extends FormRequest
@@ -28,7 +29,7 @@ class ChangeRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                Rule::unique(User::class)->ignore($this->id)
+                Rule::unique(User::class)->ignore(Auth::user()->id)
             ],
         ];
     }

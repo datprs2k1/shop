@@ -59,11 +59,21 @@ export const useUserStore = defineStore("user", {
         },
 
         async info() {
-            const response = get("/user");
-            console.log(response);
+            const response = await get("/account");
+
+            this.user = response.data.user;
         },
-        async change(id, data) {
-            const response = await post("/account/" + id, data);
+
+        async change(data) {
+            const response = await post("/account", data);
+
+            return response;
+        },
+
+        async changePassword(data) {
+            const response = await post("/account/password", data);
+
+            return response;
         },
     },
     persist: true,

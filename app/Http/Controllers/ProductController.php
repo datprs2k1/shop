@@ -27,4 +27,13 @@ class ProductController extends Controller
         $data = ProductUnit::getProductUnit();
         return response()->json($data, 200);
     }
+
+    public function search(Request $request)
+    {
+        $data = Product::where('name', 'like', '%' . $request->name . '%')
+            ->limit(5)
+            ->get();
+
+        return response()->json($data, 200);
+    }
 }

@@ -385,12 +385,12 @@ const add = async () => {
     data.append("description", description.value);
 
     try {
-        await addCategory(data);
+        const response = await addCategory(data);
         await getListCategory();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -405,12 +405,12 @@ const add = async () => {
 
 const del = async (id) => {
     try {
-        await deleteCategory(id);
+        const response = await deleteCategory(id);
         await getListCategory();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -436,7 +436,7 @@ const edit = async () => {
     data.append("_method", "PUT");
 
     try {
-        await editCategory(id.value, data);
+        const response = await editCategory(id.value, data);
 
         await getListCategory();
 
@@ -444,7 +444,7 @@ const edit = async () => {
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -488,43 +488,30 @@ const showTrash = async () => {
 };
 
 const restoreTrash = async (id) => {
-    Swal.fire({
-        title: "Bạn chắc chắn muốn xóa?",
-        text: "Bạn sẽ không thể hoàn tác!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Đồng ý!",
-        cancelButtonText: "Hủy",
-        width: 480,
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                await restoreFromTrash(id);
-                Swal.fire({
-                    title: "Đã xóa!",
-                    icon: "success",
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
+    try {
+        const response = await restoreFromTrash(id);
+        Swal.fire({
+            title: "Đã xóa!",
+            text: response.data.message,
+            icon: "success",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
 
-                await getListTrashCategory();
-                await getListCategory();
-            } catch (error) {
-                Swal.fire({
-                    title: "Thất bại",
-                    text: "Có lỗi xảy ra.",
-                    icon: "error",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
-            }
-        }
-    });
+        await getListTrashCategory();
+        await getListCategory();
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
 };
 
 const delTrash = async (id) => {
@@ -541,9 +528,10 @@ const delTrash = async (id) => {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await deleteTrash(id);
+                const response = await deleteTrash(id);
                 Swal.fire({
                     title: "Đã xóa!",
+                    text: response.data.message,
                     icon: "success",
                     position: "top-end",
                     showConfirmButton: false,

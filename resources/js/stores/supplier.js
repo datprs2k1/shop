@@ -17,14 +17,20 @@ export const useSupplierStore = defineStore("supplier", {
     actions: {
         async addSupplier(data) {
             const response = await post("/admin/supplier", data);
+
+            return response;
         },
 
         async editSupplier(id, data) {
             const response = await post("/admin/supplier/" + id, data);
+
+            return response;
         },
 
         async deleteSupplier(id) {
             const response = await del("/admin/supplier/" + id);
+
+            return response;
         },
 
         async getListSupplier(url = `/admin/supplier/`) {
@@ -41,10 +47,14 @@ export const useSupplierStore = defineStore("supplier", {
 
         async deleteTrash(id) {
             const response = await del(`/admin/supplier/trash/` + id);
+
+            return response;
         },
 
         async restoreFromTrash(id) {
             const response = await put(`/admin/supplier/trash/restore/` + id);
+
+            return response;
         },
     },
 });

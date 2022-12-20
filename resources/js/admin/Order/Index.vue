@@ -59,27 +59,33 @@
                             v-model:sort-desc="sortDesc"
                         >
                             <template #cell(action)="row">
-                                <span class="mr-3"
-                                    ><b-button
+                                <span
+                                    class="mr-3"
+                                    v-show="row.item.status == 2"
+                                >
+                                    <b-button
                                         size="sm"
                                         variant="primary"
                                         @click="approve(row.item.id)"
                                         v-b-tooltip.hover.v-secondary
                                         title="
-                                                Sửa bản ghi
+                                               Duyệt
                                             "
                                     >
                                         <i class="fas fa-edit fa-lg"></i>
                                     </b-button>
                                 </span>
-                                <span>
+                                <span
+                                    class="mr-3"
+                                    v-show="row.item.status == 1"
+                                >
                                     <b-button
                                         size="sm"
                                         variant="danger"
                                         @click="cancel(row.item.id)"
                                         v-b-tooltip.hover.v-secondary
                                         title="
-                                                Xóa bản ghi
+                                                Huỷ
                                             "
                                     >
                                         <i class="fas fa-trash fa-lg"></i>
@@ -193,12 +199,52 @@ const search = async () => {
 };
 
 const approve = async (id) => {
-    await approveOrder(id);
-    await getListOrdersAdmin();
+    try {
+        const response = await approveOrder(id);
+        await getListOrdersAdmin();
+
+        Swal.fire({
+            title: "Thành công",
+            text: response.data.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
 };
 
 const cancel = async (id) => {
-    await cancelOrder(id);
-    await getListOrdersAdmin();
+    try {
+        const response = await cancelOrder(id);
+        await getListOrdersAdmin();
+
+        Swal.fire({
+            title: "Thành công",
+            text: response.data.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
 };
 </script>

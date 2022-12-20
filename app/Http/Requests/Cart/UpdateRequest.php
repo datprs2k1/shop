@@ -25,6 +25,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'quantity' => 'required|numeric|min:1',
+            'product_id' => 'required|numeric',
         ];
     }
 
@@ -32,6 +33,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'quantity' => 'Số lượng',
+            'product_id' => 'Sản phẩm',
         ];
     }
 

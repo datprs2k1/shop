@@ -242,7 +242,8 @@
                 </div>
             </b-form-group>
             <b-form-group label="Mô tả:" label-for="input-description">
-                <b-form-textarea
+                <ckeditor
+                    :editor="editor"
                     id="input-description"
                     name="description"
                     v-model="description"
@@ -257,8 +258,8 @@
                 </div>
             </b-form-group>
             <b-form-group label="Hướng dẫn sử dụng:" label-for="input-manual">
-                <b-form-textarea
-                    id="input-manual"
+                <ckeditor
+                    :editor="editor"
                     name="manual"
                     v-model="manual"
                     placeholder="Nhập hướng dẫn sử dụng"
@@ -286,23 +287,6 @@
                 />
                 <div class="invalid-feedback">
                     {{ errors.price }}
-                </div>
-            </b-form-group>
-            <b-form-group label="Số lượng:" label-for="input-quantity">
-                <b-form-input
-                    id="input-quantity"
-                    name="quantity"
-                    v-model="quantity"
-                    type="quantity"
-                    placeholder="Nhập số lượng"
-                    required
-                    class="form-control"
-                    :class="{
-                        'is-invalid': errors.quantity,
-                    }"
-                />
-                <div class="invalid-feedback">
-                    {{ errors.quantity }}
                 </div>
             </b-form-group>
             <b-form-group label="Đơn vị tính:" label-for="input-unit">
@@ -427,7 +411,7 @@
 
                         <img
                             v-if="url"
-                            :src="url"
+                            :src="`/storage/${url}`"
                             class="img-fluid"
                             style="
                                 border-radius: 5px;
@@ -573,6 +557,9 @@ import * as yup from "yup";
 
 import Swal from "sweetalert2";
 
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 import { useProductStore } from "@/stores/product";
 import { useCategoryStore } from "@/stores/category";
 import { useSupplierStore } from "@/stores/supplier";
@@ -621,6 +608,9 @@ const keyword = ref(null);
 
 const current_page_trash = ref(1);
 const keyword_trash = ref(null);
+
+const editor = ClassicEditor;
+const ckeditor = CKEditor.component;
 
 const fields = ref([
     {
@@ -736,11 +726,6 @@ const productScheme = yup.object({
         .required("Số lượng không được để trống.")
         .positive("Số lượng phải lớn hơn 0.")
         .integer("Số lượng phải là số nguyên."),
-    quantity: yup
-        .number()
-        .required("Số lượng không được để trống.")
-        .positive("Số lượng phải lớn hơn 0.")
-        .integer("Số lượng phải là số nguyên."),
 });
 
 const { meta, errors, useFieldModel, resetForm, setErrors, setValues } =
@@ -754,7 +739,6 @@ const [id, name, description, manual, price, quantity] = useFieldModel([
     "description",
     "manual",
     "price",
-    "quantity",
 ]);
 
 onBeforeMount(async () => {
@@ -787,14 +771,15 @@ const add = async () => {
     data.append("images", images.value);
 
     try {
-        await addProduct(data);
+        const response = await addProduct(data);
+
         await getListProduct();
 
         closeModal();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -812,12 +797,12 @@ const add = async () => {
 
 const del = async (id) => {
     try {
-        await deleteProduct(id);
+        const response = await deleteProduct(id);
         await getListProduct();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -842,7 +827,6 @@ const edit = async () => {
     data.append("description", description.value);
     data.append("manual", manual.value);
     data.append("price", price.value);
-    data.append("quantity", quantity.value);
     data.append("status", status_options.value.id);
     data.append("unit", unit_options.value.id);
     data.append("category_id", category_options.value.id);
@@ -853,7 +837,7 @@ const edit = async () => {
     data.append("_method", "PUT");
 
     try {
-        await editProduct(id.value, data);
+        const response = await editProduct(id.value, data);
 
         await getListProduct();
 
@@ -861,7 +845,7 @@ const edit = async () => {
 
         Swal.fire({
             title: "Thành công",
-            text: "Sửa thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -927,43 +911,29 @@ const showTrash = async () => {
 };
 
 const restoreTrash = async (id) => {
-    Swal.fire({
-        title: "Bạn chắc chắn muốn xóa?",
-        text: "Bạn sẽ không thể hoàn tác!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Đồng ý!",
-        cancelButtonText: "Hủy",
-        width: 480,
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                await restoreFromTrash(id);
-                Swal.fire({
-                    title: "Đã xóa!",
-                    icon: "success",
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
+    try {
+        const response = await restoreFromTrash(id);
+        Swal.fire({
+            title: "Thành công",
+            text: response.data.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
 
-                await getListTrashProduct();
-                await getListProduct();
-            } catch (error) {
-                Swal.fire({
-                    title: "Thất bại",
-                    text: "Có lỗi xảy ra.",
-                    icon: "error",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
-            }
-        }
-    });
+        await getListTrashProduct();
+        await getListProduct();
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
 };
 
 const delTrash = async (id) => {
@@ -980,11 +950,12 @@ const delTrash = async (id) => {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await deleteTrash(id);
+                const response = await deleteTrash(id);
+
                 Swal.fire({
                     title: "Đã xóa!",
+                    text: response.data.message,
                     icon: "success",
-                    position: "top-end",
                     showConfirmButton: false,
                     timer: 1000,
                     width: 360,

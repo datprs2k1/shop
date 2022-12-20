@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/upload', [ImageController::class, 'store']);
     Route::get('/media/{id}', [ImageController::class, 'getImages']);

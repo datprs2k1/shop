@@ -217,6 +217,11 @@
                                                                                                 product.id
                                                                                             )
                                                                                         "
+                                                                                        :class="{
+                                                                                            disabled:
+                                                                                                product.quantity !=
+                                                                                                1,
+                                                                                        }"
                                                                                     >
                                                                                         <i
                                                                                             class="fa fa-shopping-cart"
@@ -274,6 +279,7 @@ import { useUserStore } from "@/stores/user";
 import { onBeforeMount, onMounted, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const store = useCategoryStore();
 
@@ -316,6 +322,7 @@ const add = async (id) => {
 
     if (find) {
         const formData = new FormData();
+        formData.append("product_id", id);
         formData.append("quantity", edit.value.quantity);
         formData.append("_method", "PUT");
 
@@ -332,5 +339,15 @@ const add = async (id) => {
 
         await getListCart();
     }
+
+    Swal.fire({
+        title: "Thêm công.",
+        text: "Thêm thành công.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1000,
+        width: 360,
+        position: "top-end",
+    });
 };
 </script>

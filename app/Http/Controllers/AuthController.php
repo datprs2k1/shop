@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\User\ChangePassword;
 use App\Http\Requests\User\ChangeRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -71,9 +72,9 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function changeInfo(ChangeRequest $request, $id)
+    public function changeInfo(ChangeRequest $request)
     {
-        $user = User::find($id);
+        $user = User::find(Auth::user()->id);
 
         $user->name = $request->name;
 
@@ -81,6 +82,39 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Cập nhật thông tin thành công.'
+        ], 200);
+    }
+
+    public function getInfo()
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            'user' => [
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "role" => $user->getRoleNames()[0],
+            ],
+        ]);
+    }
+
+    public function changePassword(ChangePassword $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Mật khẩu cũ không đúng.',
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->new_password);
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Đổi mật khẩu thành công.',
         ], 200);
     }
 }

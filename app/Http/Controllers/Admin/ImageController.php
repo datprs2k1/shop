@@ -27,8 +27,8 @@ class ImageController extends Controller
 
     public function getImages($id)
     {
-        $images = Product::find($id)->images();
+        $images = Product::with('images')->find($id);
 
-        return ['media' => $images];
+        return ['media' => $images->images];
     }
 }

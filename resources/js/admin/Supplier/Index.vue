@@ -347,10 +347,27 @@
             striped
             hover
             :items="trash.data"
-            :fields="fields"
+            :fields="restoreFields"
             v-model:sort-by="sortBy"
             v-model:sort-desc="sortDesc"
         >
+            <template #cell(logo)="row">
+                <div>
+                    <center>
+                        <span>
+                            <img
+                                style="
+                                    border-radius: 5px;
+                                    width: 100px;
+                                    height: 80px;
+                                    box-shadow: 0px 0px 10px #ccc;
+                                "
+                                :src="row.item.logo"
+                            />
+                        </span>
+                    </center>
+                </div>
+            </template>
             <template #cell(action)="row">
                 <span class="mr-3"
                     ><b-button
@@ -486,6 +503,30 @@ const fields = ref([
     },
 ]);
 
+const restoreFields = ref([
+    {
+        key: "id",
+        label: "ID",
+        class: "text-center",
+    },
+    {
+        key: "logo",
+        label: "Logo",
+        class: "text-center",
+    },
+    {
+        key: "name",
+        label: "Tên nhà cung cấp",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "action",
+        label: "Hành động",
+        class: "text-center",
+    },
+]);
+
 const showModal = ref(false);
 
 const showTrashModal = ref(false);
@@ -560,12 +601,12 @@ const add = async () => {
     data.append("website", website.value);
 
     try {
-        await addSupplier(data);
+        const response = await addSupplier(data);
         await getListSupplier();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -585,12 +626,12 @@ const add = async () => {
 
 const del = async (id) => {
     try {
-        await deleteSupplier(id);
+        const response = await deleteSupplier(id);
         await getListSupplier();
 
         Swal.fire({
             title: "Thành công",
-            text: "Thêm thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -621,7 +662,7 @@ const edit = async () => {
     data.append("_method", "PUT");
 
     try {
-        await editSupplier(id.value, data);
+        const response = await editSupplier(id.value, data);
 
         await getListSupplier();
 
@@ -634,7 +675,7 @@ const edit = async () => {
 
         Swal.fire({
             title: "Thành công",
-            text: "Sửa thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,
@@ -686,43 +727,29 @@ const showTrash = async () => {
 };
 
 const restoreTrash = async (id) => {
-    Swal.fire({
-        title: "Bạn chắc chắn muốn xóa?",
-        text: "Bạn sẽ không thể hoàn tác!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Đồng ý!",
-        cancelButtonText: "Hủy",
-        width: 480,
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                await restoreFromTrash(id);
-                Swal.fire({
-                    title: "Đã xóa!",
-                    icon: "success",
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
+    try {
+        const response = await restoreFromTrash(id);
+        Swal.fire({
+            title: "Thành công",
+            text: response.data.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
 
-                await getListTrashSupplier();
-                await getListSupplier();
-            } catch (error) {
-                Swal.fire({
-                    title: "Thất bại",
-                    text: "Có lỗi xảy ra.",
-                    icon: "error",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    width: 360,
-                });
-            }
-        }
-    });
+        await getListTrashSupplier();
+        await getListSupplier();
+    } catch (error) {
+        Swal.fire({
+            title: "Thất bại",
+            text: "Có lỗi xảy ra.",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    }
 };
 
 const delTrash = async (id) => {
@@ -739,11 +766,11 @@ const delTrash = async (id) => {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await deleteTrash(id);
+                const response = await deleteTrash(id);
                 Swal.fire({
-                    title: "Đã xóa!",
+                    title: "Đã xoá!",
+                    text: response.data.message,
                     icon: "success",
-                    position: "top-end",
                     showConfirmButton: false,
                     timer: 1000,
                     width: 360,

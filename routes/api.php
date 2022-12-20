@@ -48,10 +48,14 @@ Route::controller(AddressController::class)->group(function () {
 Route::get('order/method', [OrderController::class, 'getMethod']);
 Route::get('order/status', [OrderController::class, 'getStatus']);
 
+Route::post('search', [ProductController::class, 'search']);
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('logout', 'logout');
         Route::get('account', 'getInfo');
+        Route::post('account', 'changeInfo');
+        Route::post('account/password', 'changePassword');
     });
     Route::resource('cart', CartController::class);
     Route::resource('order', OrderController::class);

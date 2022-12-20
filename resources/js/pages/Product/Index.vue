@@ -240,9 +240,10 @@
                                         }"
                                     >
                                         <div class="product-tab">
-                                            <p class="text">
-                                                {{ product.description }}
-                                            </p>
+                                            <p
+                                                class="text"
+                                                v-html="product.description"
+                                            ></p>
                                         </div>
                                     </div>
                                     <!-- /.tab-pane -->
@@ -256,9 +257,10 @@
                                     >
                                         <div class="product-tab">
                                             <div class="product-reviews">
-                                                <p class="text">
-                                                    {{ product.manual }}
-                                                </p>
+                                                <p
+                                                    class="text"
+                                                    v-html="product.manual"
+                                                ></p>
                                             </div>
                                             <!-- /.product-HDSD -->
                                         </div>
@@ -429,6 +431,7 @@ const add = async (id) => {
     if (find) {
         const formData = new FormData();
         formData.append("quantity", edit.value.quantity);
+        formData.append("product_id", id);
         formData.append("_method", "PUT");
 
         await editCart(edit.value.id, formData);
@@ -444,6 +447,16 @@ const add = async (id) => {
 
         await getListCart();
     }
+
+    Swal.fire({
+        title: "Thêm công.",
+        text: "Thêm thành công.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1000,
+        width: 360,
+        position: "top-end",
+    });
 };
 
 onBeforeMount(async () => {

@@ -77,7 +77,6 @@ class ProductController extends Controller
 
         $product->inventory()->create([
             'supplier_id' => $request->supplier_id,
-            'quantity' => $request->quantity,
         ]);
 
         $images = explode(',', $request->images);
@@ -156,7 +155,7 @@ class ProductController extends Controller
 
 
         $product->inventory()->update([
-            'quantity' => $request->quantity,
+            'supplier_id' => $request->supplier_id,
         ]);
 
 

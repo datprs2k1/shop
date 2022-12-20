@@ -21,14 +21,20 @@ export const useProductStore = defineStore("product", {
     actions: {
         async addProduct(data) {
             const response = await post("/admin/product", data);
+
+            return response;
         },
 
         async editProduct(id, data) {
             const response = await post("/admin/product/" + id, data);
+
+            return response;
         },
 
         async deleteProduct(id) {
             const response = await del("/admin/product/" + id);
+
+            return response;
         },
 
         async getListProduct(url = `/admin/product/`) {
@@ -45,10 +51,14 @@ export const useProductStore = defineStore("product", {
 
         async deleteTrash(id) {
             const response = await del(`/admin/product/trash/` + id);
+
+            return response;
         },
 
         async restoreFromTrash(id) {
             const response = await put(`/admin/product/trash/restore/` + id);
+
+            return response;
         },
 
         async getProductStatus() {

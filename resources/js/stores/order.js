@@ -49,9 +49,13 @@ export const useOrderStore = defineStore("order", {
 
         async approveOrder(id) {
             const response = await post(`/admin/order/approve/${id}`);
+
+            return response;
         },
         async cancelOrder(id) {
             const response = await post(`/admin/order/cancel/${id}`);
+
+            return response;
         },
     },
 });

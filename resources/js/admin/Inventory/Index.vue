@@ -70,7 +70,7 @@
                                 {{
                                     status.find(
                                         (item) => item.id == row.item.status
-                                    )
+                                    ).name
                                 }}
                             </template>
 

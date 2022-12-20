@@ -446,6 +446,7 @@ const isAdd = ref(false);
 const edit = async (item) => {
     const formData = new FormData();
     formData.append("quantity", item.quantity);
+    formData.append("product_id", item.product_id);
     formData.append("_method", "PUT");
 
     await editCart(item.id, formData);
