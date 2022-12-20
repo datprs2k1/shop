@@ -27,7 +27,7 @@
                                 >
                             </li>
                             <li v-show="isAuthenticated">
-                                <a href=""
+                                <a href="" @click.prevent="logoutUser"
                                     ><i class="icon fa fa-list-alt"></i>Đăng
                                     xuất</a
                                 >
@@ -308,6 +308,8 @@ import { useCartStore } from "@/stores/cart";
 import { useUserStore } from "@/stores/user";
 import { computed, onBeforeMount, onMounted, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const store = useCategoryStore();
 
@@ -315,7 +317,11 @@ const cartStore = useCartStore();
 
 const userStore = useUserStore();
 
+const router = useRouter();
+
 const { isAuthenticated, user } = storeToRefs(userStore);
+
+const { logout } = userStore;
 
 const { categories } = storeToRefs(store);
 
@@ -338,6 +344,28 @@ const total = computed(() => {
 const delCart = async (id) => {
     await deleteCart(id);
     await getListCart();
+};
+
+const logoutUser = async () => {
+    try {
+        const response = await logout();
+
+        await Swal.fire({
+            icon: "success",
+            title: response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+        });
+
+        router.push({ name: "login" });
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Đăng xuất thất bại",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    }
 };
 
 onBeforeMount(async () => {

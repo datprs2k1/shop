@@ -32,14 +32,31 @@
                                             class="single-product-gallery-item"
                                             id="slide1"
                                         >
-                                            <img
-                                                class="img-responsive"
-                                                alt=""
-                                                :src="`/storage/${product.image}`"
-                                            />
+                                            <vueper-slides
+                                                autoplay
+                                                class="no-shadow"
+                                                slide-multiple
+                                                :bullets="false"
+                                                :touchable="false"
+                                                fixedHeight="420px"
+                                            >
+                                                <vueper-slide
+                                                    v-for="slide in product.images"
+                                                    :key="slide.id"
+                                                    :duration="2000"
+                                                >
+                                                    <template v-slot:content>
+                                                        <img
+                                                            class="img-responsive"
+                                                            :src="`/storage/images/products/${slide.name}`"
+                                                        />
+                                                    </template>
+                                                </vueper-slide>
+                                            </vueper-slides>
                                         </div>
                                         <!-- /.single-product-gallery-item -->
                                     </div>
+
                                     <!-- /.single-product-slider -->
                                 </div>
                                 <!-- /.single-product-gallery -->
@@ -143,6 +160,11 @@
                                                     class="btn btn-primary"
                                                     id="them_gio_hang"
                                                     @click="add(product.id)"
+                                                    :class="{
+                                                        disabled:
+                                                            productStatus.status !=
+                                                            1,
+                                                    }"
                                                 >
                                                     <i
                                                         class="fa fa-shopping-cart inner-right-vs"
@@ -335,6 +357,12 @@
     <!-- /.body-content -->
 </template>
 
+<style scoped>
+.vueperslides__arrow {
+    color: yellow;
+}
+</style>
+
 <script setup>
 import { useProductStore } from "@/stores/product";
 import { useCartStore } from "@/stores/cart";
@@ -422,6 +450,8 @@ onBeforeMount(async () => {
     await getDetailProduct(route.params.id);
     await getProductUnit();
     await getProductStatus();
+
+    document.title = product.value.name;
 });
 
 const productUnit = computed(() => {

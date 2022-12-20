@@ -19,8 +19,8 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained()->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->integer('quantity');
-            $table->tinyInteger('status')->default(0);
+            $table->integer('quantity')->default(0);
+            $table->tinyInteger('status')->default(2);
             $table->softDeletes();
             $table->timestamps();
         });

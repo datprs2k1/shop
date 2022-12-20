@@ -49,7 +49,10 @@ Route::get('order/method', [OrderController::class, 'getMethod']);
 Route::get('order/status', [OrderController::class, 'getStatus']);
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('account/{id}', [AuthController::class, 'changeInfo']);
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('logout', 'logout');
+        Route::get('account', 'getInfo');
+    });
     Route::resource('cart', CartController::class);
     Route::resource('order', OrderController::class);
     Route::controller(AddressController::class)->group(function () {

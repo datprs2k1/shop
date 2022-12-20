@@ -20,6 +20,9 @@ import { UploadMedia, UpdateMedia } from "vue-media-upload";
 import VueMultiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 
+import { VueperSlides, VueperSlide } from "vueperslides";
+import "vueperslides/dist/vueperslides.css";
+
 const app = createApp(App);
 
 const pinia = createPinia();
@@ -35,5 +38,7 @@ app.use(BootstrapVue3);
 app.component("upload-media", UploadMedia);
 app.component("update-media", UpdateMedia);
 app.component("multiselect", VueMultiselect);
+app.component("vueper-slides", VueperSlides);
+app.component("vueper-slide", VueperSlide);
 
 app.mount("#app");

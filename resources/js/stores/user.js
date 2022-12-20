@@ -26,6 +26,8 @@ export const useUserStore = defineStore("user", {
             this.expires_in =
                 new Date().getTime() + response.data.expires_in * 1000;
             this.isAuthenticated = true;
+
+            return response;
         },
 
         async register(data) {
@@ -37,6 +39,15 @@ export const useUserStore = defineStore("user", {
             this.expires_in =
                 new Date().getTime() + response.data.expires_in * 1000;
             this.isAuthenticated = true;
+
+            return response;
+        },
+
+        async logout() {
+            const response = await post("/logout");
+            this.reset();
+
+            return response;
         },
 
         reset() {
@@ -48,12 +59,12 @@ export const useUserStore = defineStore("user", {
         },
 
         async info() {
-            const response = get('/user');
+            const response = get("/user");
             console.log(response);
         },
         async change(id, data) {
-            const response = await post('/account/' + id, data);
-        }
+            const response = await post("/account/" + id, data);
+        },
     },
     persist: true,
 });

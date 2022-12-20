@@ -178,11 +178,11 @@ const Login = async () => {
         formData.append("email", email.value);
         formData.append("password", password.value);
 
-        await login(formData);
+        const response = await login(formData);
 
-        Swal.fire({
+        await Swal.fire({
             title: "Thành công",
-            text: "Đăng nhập thành công.",
+            text: response.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 1000,

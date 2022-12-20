@@ -155,13 +155,12 @@ class ProductController extends Controller
         $product->save();
 
 
-        $product->inventory()->create([
-            'supplier_id' => $request->supplier_id,
+        $product->inventory()->update([
             'quantity' => $request->quantity,
         ]);
 
 
-        if ($request->images != null) {
+        if ($request->add_images != null) {
             $add_images = explode(',', $request->add_images);
 
             foreach ($add_images as $image) {

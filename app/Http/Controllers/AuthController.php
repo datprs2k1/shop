@@ -62,6 +62,15 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout()
+    {
+        Auth::logout();
+
+        return response()->json([
+            'message' => 'Đăng xuất thành công.',
+        ], 200);
+    }
+
     public function changeInfo(ChangeRequest $request, $id)
     {
         $user = User::find($id);

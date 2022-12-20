@@ -273,12 +273,15 @@ import { useCartStore } from "@/stores/cart";
 import { useUserStore } from "@/stores/user";
 import { onBeforeMount, onMounted, ref } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
 const store = useCategoryStore();
 
 const cartStore = useCartStore();
 
 const userStore = useUserStore();
+
+const router = useRouter();
 
 const { isAuthenticated } = storeToRefs(userStore);
 
