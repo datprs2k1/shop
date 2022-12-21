@@ -36,5 +36,10 @@ export const useInventoryStore = defineStore("inventory", {
             const response = await get("/admin/inventory/logstatus");
             this.logStatus = response.data;
         },
+
+        async add(data) {
+            const response = await post("/admin/inventory", data);
+            return response;
+        },
     },
 });

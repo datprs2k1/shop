@@ -23,7 +23,28 @@
                     <b-card header-tag="header" footer-tag="footer">
                         <template #header>
                             <b-row>
-                                <b-col md="8"> </b-col>
+                                <b-col md="8">
+                                    <b-row>
+                                        <b-cols class="mr-4">
+                                            <span>
+                                                <button
+                                                    class="btn btn-success"
+                                                    @click="
+                                                        showAddModal =
+                                                            !showAddModal;
+                                                        isAdd = true;
+                                                    "
+                                                    v-b-tooltip.hover.v-secondary
+                                                    title="
+                                                        Thêm nhà cung cấp
+                                                    "
+                                                >
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </b-cols>
+                                    </b-row>
+                                </b-col>
                                 <b-col md="4">
                                     <b-row>
                                         <b-col md="8">
@@ -130,6 +151,61 @@
                 </template>
             </b-table>
         </b-modal>
+        <b-modal v-model="showAddModal" id="modal" size="lg">
+            <template #title> Nhập hàng </template>
+            <b-form>
+                <b-form-group label="Sản phẩm:" label-for="input-category">
+                    <multiselect
+                        v-model="product_id"
+                        :options="products.data"
+                        placeholder="Nhập từ khóa tìm kiếm"
+                        selectedLabel="Đã được chọn"
+                        selectLabel="Click hoặc enter để chọn"
+                        deselectLabel="Click hoặc enter để bỏ chọn"
+                        label="name"
+                        track-by="name"
+                        :class="{
+                            'is-invalid': errors.product_id,
+                        }"
+                    >
+                    </multiselect>
+                    <div class="invalid-feedback">
+                        {{ errors.product_id }}
+                    </div>
+                </b-form-group>
+                <b-form-group label="Số lượng:" label-for="input-name">
+                    <b-form-input
+                        id="input-name"
+                        name="name"
+                        v-model="quantity"
+                        type="text"
+                        placeholder="Nhập số lượng"
+                        required
+                        class="form-control"
+                        :class="{
+                            'is-invalid': errors.quantity,
+                        }"
+                    />
+                    <div class="invalid-feedback">
+                        {{ errors.name }}
+                    </div>
+                </b-form-group>
+            </b-form>
+            <template #footer>
+                <div>
+                    <b-button
+                        variant="success"
+                        @click="addInventory()"
+                        class="mr-3"
+                    >
+                        Xác nhận
+                    </b-button>
+                    <b-button variant="danger" @click="closeModal()">
+                        Hủy
+                    </b-button>
+                </div>
+            </template>
+        </b-modal>
     </section>
 </template>
 
@@ -140,11 +216,24 @@ import { useInventoryStore } from "../../stores/inventory";
 
 import { storeToRefs } from "pinia";
 
+import { useProductStore } from "../../stores/product";
+
+import Swal from "sweetalert2";
+
 const sortBy = ref("id");
 const sortDesc = ref(false);
 const current_page = ref(1);
 const keyword = ref(null);
 const showModal = ref(false);
+const showAddModal = ref(false);
+const product_id = ref();
+const quantity = ref(1);
+
+const errors = ref({});
+
+const closeModal = () => {
+    showAddModal.value = !showModal.value;
+};
 
 const fields = ref([
     {
@@ -231,20 +320,28 @@ const log = ref([]);
 
 const inventoryStore = useInventoryStore();
 
+const productStore = useProductStore();
+
 const { inventory, inventories, status, logStatus } =
     storeToRefs(inventoryStore);
+
+const { products } = storeToRefs(productStore);
 
 const {
     getInfoInventory,
     getListInventory,
     getInventoryStatus,
     getLogInventoryStatus,
+    add,
 } = inventoryStore;
+
+const { getListProduct } = productStore;
 
 onBeforeMount(async () => {
     await getListInventory();
     await getInventoryStatus();
     await getLogInventoryStatus();
+    await getListProduct();
 });
 
 const currenPage = watch(current_page, async (newPage) => {
@@ -264,5 +361,28 @@ const search = async () => {
 const show = async (id) => {
     await getInfoInventory(id);
     showModal.value = true;
+};
+
+const addInventory = async () => {
+    const data = new FormData();
+    data.append("product_id", product_id.value.id);
+    data.append("quantity", quantity.value);
+
+    try {
+        const response = await add(data);
+
+        Swal.fire({
+            title: "Thành công",
+            text: response.data.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+
+        showAddModal.value = false;
+    } catch (error) {
+        errors.value = error.response.data.errors;
+    }
 };
 </script>

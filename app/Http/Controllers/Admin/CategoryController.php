@@ -7,6 +7,7 @@ use App\Http\Requests\Category\StoreRequest;
 use App\Http\Requests\Category\UpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -176,5 +177,10 @@ class CategoryController extends Controller
             'status' => 'success',
             'message' => 'Khôi phục thành công.'
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new Category(), 'users.xlsx');
     }
 }

@@ -15,6 +15,7 @@ final class InventoryLogEnum extends Enum
 {
     public const DA_BAN = 1;
     public const HUY = 2;
+    public const NHAP = 3;
 
     public static function getInventoryLogStatus()
     {
@@ -26,7 +27,11 @@ final class InventoryLogEnum extends Enum
             [
                 'id' => self::HUY,
                 'name' => 'Đã huỷ',
-            ]
+            ],
+            [
+                'id' => self::NHAP,
+                'name' => 'Đã nhập',
+            ],
         ];
     }
 }

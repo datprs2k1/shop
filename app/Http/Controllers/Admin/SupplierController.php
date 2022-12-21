@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\SupplierExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Supplier\StoreRequest;
 use App\Http\Requests\Supplier\UpdateRequest;
@@ -9,6 +10,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SupplierController extends Controller
 {
@@ -190,5 +192,10 @@ class SupplierController extends Controller
             'status' => 'success',
             'message' => 'Khôi phục thành công.'
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new SupplierExport, 'suppliers.xlsx');
     }
 }

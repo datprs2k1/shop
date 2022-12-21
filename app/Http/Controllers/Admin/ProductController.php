@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ProductStatus;
 use App\Enums\ProductUnit;
+use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreRequest;
 use App\Http\Requests\Product\UpdateRequest;
@@ -11,6 +12,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Mockery\Undefined;
 
 class ProductController extends Controller
@@ -256,5 +258,10 @@ class ProductController extends Controller
     {
         $data = ProductUnit::getProductUnit();
         return response()->json($data, 200);
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProductExport, 'products.xlsx');
     }
 }

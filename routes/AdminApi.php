@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/upload', [ImageController::class, 'store']);
     Route::get('/media/{id}', [ImageController::class, 'getImages']);
@@ -65,6 +66,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/inventory/status', 'getStatus');
         Route::get('/inventory/logstatus', 'getLogStatus');
         Route::get('/inventory', 'index');
+        Route::post('/inventory', 'store');
         Route::get('/inventory/{id}', 'show');
     });
 });
