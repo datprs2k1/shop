@@ -182,11 +182,10 @@
                                     id="revenue-chart"
                                     style="height: 500px"
                                 >
-                                    <canvas
-                                        id="san-pham"
-                                        height="500"
-                                        style="height: 500px"
-                                    ></canvas>
+                                    <Pie
+                                        :chart-data="product"
+                                        :chart-options="optional"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -197,7 +196,7 @@
     </section>
 </template>
 <script setup>
-import { Bar, Line } from "vue-chartjs";
+import { Bar, Line, Pie } from "vue-chartjs";
 
 import { useReportStore } from "@/stores/report";
 import { onBeforeMount } from "@vue/runtime-core";
@@ -213,6 +212,7 @@ import {
     CategoryScale,
     PointElement,
     BarElement,
+    ArcElement,
 } from "chart.js";
 ChartJS.register(
     Title,
@@ -222,14 +222,15 @@ ChartJS.register(
     LinearScale,
     CategoryScale,
     PointElement,
-    BarElement
+    BarElement,
+    ArcElement
 );
 
 const reportStore = useReportStore();
 
-const { month, year } = storeToRefs(reportStore);
+const { month, year, product } = storeToRefs(reportStore);
 
-const { getMonthReport, getYearReport } = reportStore;
+const { getMonthReport, getYearReport, getProductReport } = reportStore;
 
 const optional = {
     responsive: true,
@@ -239,5 +240,6 @@ const optional = {
 onBeforeMount(async () => {
     await getMonthReport();
     await getYearReport();
+    await getProductReport();
 });
 </script>

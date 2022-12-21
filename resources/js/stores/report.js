@@ -26,5 +26,11 @@ export const useReportStore = defineStore("report", {
 
             this.year = response.data;
         },
+
+        async getProductReport() {
+            const response = await get("/admin/report/product");
+
+            this.product = response.data;
+        },
     },
 });

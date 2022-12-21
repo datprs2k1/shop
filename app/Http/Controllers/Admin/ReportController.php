@@ -88,15 +88,22 @@ class ReportController extends Controller
 
     public function sanpham()
     {
-        $sanpham = Product::select('ten_san_pham')->withCount(['orders' => function ($query) {
+        $sanpham = Product::select('name')->withCount(['order' => function ($query) {
             $query->where('status', '1');
         }], 'id')->get();
+
 
         $san_pham = [];
 
         foreach ($sanpham as $item) {
-            $san_pham[$item->ten_san_pham] = $item->hoa_don_count;
+            $san_pham[$item->name] = $item->order_count;
         }
-        return response()->json($san_pham);
+
+        return response()->json([
+            'labels' => array_keys($san_pham),
+            'datasets' => [[
+                'data' => array_values($san_pham)
+            ]]
+        ], 200);
     }
 }

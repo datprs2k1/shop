@@ -50,4 +50,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Order::class, 'order_details');
     }
+
+    public function order()
+    {
+        return $this->belongsToMany(Order::class, 'order_details', 'product_id', 'order_id');
+    }
 }
