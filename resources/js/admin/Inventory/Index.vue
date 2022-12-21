@@ -43,6 +43,21 @@
                                                 </button>
                                             </span>
                                         </b-cols>
+                                        <b-cols class="mr-4">
+                                            <span>
+                                                <button
+                                                    class="btn btn-success"
+                                                    v-b-tooltip.hover.v-secondary="
+                                                        'Xuất PDF các bản ghi ở trang hiện tại'
+                                                    "
+                                                >
+                                                    <i
+                                                        class="fa fa-file-excel"
+                                                        @click="exportExcel"
+                                                    ></i>
+                                                </button>
+                                            </span>
+                                        </b-cols>
                                     </b-row>
                                 </b-col>
                                 <b-col md="4">
@@ -218,6 +233,8 @@ import { storeToRefs } from "pinia";
 
 import { useProductStore } from "../../stores/product";
 
+import { get } from "@/services/api";
+
 import Swal from "sweetalert2";
 
 const sortBy = ref("id");
@@ -384,5 +401,11 @@ const addInventory = async () => {
     } catch (error) {
         errors.value = error.response.data.errors;
     }
+};
+
+const exportExcel = async () => {
+    const url = "/api/admin/inventory/export";
+    window.location.href =
+        window.location.protocol + "//" + window.location.host + url;
 };
 </script>

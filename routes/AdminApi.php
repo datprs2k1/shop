@@ -21,7 +21,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::get('category/export', [CategoryController::class, 'export']);
+Route::get('supplier/export', [SupplierController::class, 'export']);
+Route::get('product/export', [ProductController::class, 'export']);
+Route::get('inventory/export', [InventoryController::class, 'export']);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/upload', [ImageController::class, 'store']);

@@ -42,7 +42,7 @@
                                                 </button>
                                             </span>
                                         </b-cols>
-                                        <b-cols>
+                                        <b-cols class="mr-4">
                                             <span>
                                                 <button
                                                     class="btn btn-success"
@@ -54,6 +54,21 @@
                                                 >
                                                     <i
                                                         class="fas fa-trash-restore"
+                                                    ></i>
+                                                </button>
+                                            </span>
+                                        </b-cols>
+                                        <b-cols class="mr-4">
+                                            <span>
+                                                <button
+                                                    class="btn btn-success"
+                                                    v-b-tooltip.hover.v-secondary="
+                                                        'Xuất PDF các bản ghi ở trang hiện tại'
+                                                    "
+                                                >
+                                                    <i
+                                                        class="fa fa-file-excel"
+                                                        @click="exportExcel"
                                                     ></i>
                                                 </button>
                                             </span>
@@ -790,5 +805,11 @@ const delTrash = async (id) => {
             }
         }
     });
+};
+
+const exportExcel = async () => {
+    const url = "/api/admin/supplier/export";
+    window.location.href =
+        window.location.protocol + "//" + window.location.host + url;
 };
 </script>
