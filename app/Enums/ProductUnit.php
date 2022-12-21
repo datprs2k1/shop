@@ -19,6 +19,9 @@ final class ProductUnit extends Enum
     public const KHAY = 4;
     public const QUA = 5;
     public const KILOGRAM = 6;
+    public const TUI = 7;
+    public const GOI = 8;
+    public const CAN = 9;
 
     public static function getProductUnit()
     {
@@ -46,6 +49,18 @@ final class ProductUnit extends Enum
             [
                 'id' => self::KILOGRAM,
                 'name' => 'KG'
+            ],
+            [
+                'id' => self::TUI,
+                'name' => 'Túi'
+            ],
+            [
+                'id' => self::GOI,
+                'name' => 'Gói'
+            ],
+            [
+                'id' => self::CAN,
+                'name' => 'Can'
             ],
         ];
     }
