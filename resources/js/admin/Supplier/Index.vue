@@ -121,7 +121,7 @@
                                                     box-shadow: 0px 0px 10px
                                                         #ccc;
                                                 "
-                                                :src="row.item.logo"
+                                                :src="`/storage/images/suppliers/${row.item.logo}`"
                                             />
                                         </span>
                                     </center>
@@ -377,7 +377,7 @@
                                     height: 80px;
                                     box-shadow: 0px 0px 10px #ccc;
                                 "
-                                :src="row.item.logo"
+                                :src="`/storage/images/suppliers/${row.item.logo}`"
                             />
                         </span>
                     </center>

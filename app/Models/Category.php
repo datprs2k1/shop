@@ -22,6 +22,6 @@ class Category extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class)->limit(10)->orderBy('id', 'desc');
+        return $this->hasMany(Product::class);
     }
 }

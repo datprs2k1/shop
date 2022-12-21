@@ -92,11 +92,7 @@
                         </div>
                         <div class="tab-content outer-top-xs">
                             <div class="tab-pane in active" id="all">
-                                <div
-                                    class="product-slider"
-                                    v-for="product in category.products"
-                                    :key="product.id"
-                                >
+                                <div class="product-slider">
                                     <div
                                         class="owl-carousel home-owl-carousel custom-carousel owl-theme"
                                         data-item="4"
@@ -114,6 +110,8 @@
                                                 "
                                             >
                                                 <div
+                                                    v-for="product in category.products"
+                                                    :key="product.id"
                                                     class="owl-item product-wrapper"
                                                     style="width: 20%"
                                                 >
@@ -142,7 +140,7 @@
                                                                                 href=""
                                                                             >
                                                                                 <img
-                                                                                    :src="`/storage/${product.image}`"
+                                                                                    :src="`/storage/images/products/${product.image}`"
                                                                                     alt=""
                                                                                 />
                                                                             </a>

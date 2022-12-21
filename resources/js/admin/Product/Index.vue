@@ -121,11 +121,19 @@
                                                     box-shadow: 0px 0px 10px
                                                         #ccc;
                                                 "
-                                                :src="`/storage/${row.item.image}`"
+                                                :src="`/storage/images/products/${row.item.image}`"
                                             />
                                         </span>
                                     </center>
                                 </div>
+                            </template>
+                            <template #cell(description)="row">
+                                {{
+                                    row.item.description.length > 100
+                                        ? row.item.description.substr(0, 100) +
+                                          "..."
+                                        : row.item.description
+                                }}
                             </template>
                             <template #cell(quantity)="row">
                                 <div>
@@ -426,7 +434,7 @@
 
                         <img
                             v-if="url"
-                            :src="`/storage/${url}`"
+                            :src="`/storage/images/products/${url}`"
                             class="img-fluid"
                             style="
                                 border-radius: 5px;

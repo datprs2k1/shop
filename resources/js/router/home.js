@@ -1,13 +1,12 @@
 const App = () => import("../pages/App.vue");
 const Home = () => import("../pages/Home/Index.vue");
 const Login = () => import("../pages/Login/Index.vue");
-const Category = () => import("../pages/Category/Index.vue");
+import Category from "../pages/Category/Index.vue";
 const Product = () => import("../pages/Product/Index.vue");
 const Cart = () => import("../pages/Cart/Index.vue");
 const Order = () => import("../pages/Order/Index.vue");
 const OrderDetail = () => import("../pages/Order/Detail.vue");
 const Account = () => import("../pages/Account/index.vue");
-
 
 const routes = [
     {
@@ -65,7 +64,7 @@ const routes = [
                 meta: {
                     requireAuth: true,
                 },
-            }
+            },
         ],
     },
 ];

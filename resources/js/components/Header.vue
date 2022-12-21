@@ -333,6 +333,7 @@
                                                     id: item.id,
                                                 },
                                             }"
+                                            :key="router.fullPath"
                                             >{{ item.name }}</router-link
                                         >
                                     </li>

@@ -42,7 +42,7 @@
                                                         <div class="image">
                                                             <a href=""
                                                                 ><img
-                                                                    :src="`${product.image}`"
+                                                                    :src="`/storage/images/products/${product.image}`"
                                                                     alt=""
                                                                     class="images"
                                                             /></a>

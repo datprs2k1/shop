@@ -7,7 +7,9 @@ use App\Enums\InventoryStatusEnum;
 use App\Exports\InventoryExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreRequest;
+use App\Models\Category;
 use App\Models\Inventory;
+use App\Models\Product;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -53,8 +55,17 @@ class InventoryController extends Controller
     public function store(StoreRequest $request)
     {
 
+        $product = Product::findOrFail($request->product_id);
+
+        $supplier = Category::findOrFail($product->supplier_id);
+
         $inventory = Inventory::where('product_id', $request->product_id)
-            ->first();
+            ->firstOrCreate([
+                'product_id' => $request->product_id,
+                'supplier_id' => $supplier->id,
+                'quantity' => $request->quantity,
+                'status' => InventoryStatusEnum::CON_HANG,
+            ]);
 
         $inventory->logs()->create([
             'status' => InventoryLogEnum::NHAP,

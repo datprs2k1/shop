@@ -40,6 +40,14 @@
                                                 :touchable="false"
                                                 fixedHeight="420px"
                                             >
+                                                <vueper-slide>
+                                                    <template v-slot:content>
+                                                        <img
+                                                            class="img-responsive"
+                                                            :src="`/storage/images/products/${product.image}`"
+                                                        />
+                                                    </template>
+                                                </vueper-slide>
                                                 <vueper-slide
                                                     v-for="slide in product.images"
                                                     :key="slide.id"
