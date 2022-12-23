@@ -35,7 +35,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'Tên',
             'email' => 'Email',
-            'password' => 'Email',
+            'password' => 'Mật khẩu',
         ];
     }
 

@@ -102,7 +102,7 @@
                                     v-model="city"
                                     @change="getDistrict()"
                                 >
-                                    <option value="">Chọn tỉnh.</option>
+                                    <option value="" selected>Chọn tỉnh.</option>
                                     <option
                                         v-for="(value, key, index) in cities"
                                         :key="index"
@@ -124,7 +124,7 @@
                                     v-model="district"
                                     @change="getWard()"
                                 >
-                                    <option value="">Chọn huyện.</option>
+                                    <option value="" selected>Chọn huyện.</option>
                                     <option
                                         v-for="district in districts"
                                         :key="district.name"
@@ -146,7 +146,7 @@
                                     name="xa"
                                     v-model="ward"
                                 >
-                                    <option value="">Chọn xã.</option>
+                                    <option value="" selected>Chọn xã.</option>
                                     <option
                                         v-for="ward in wards"
                                         :key="ward.name"
@@ -252,7 +252,7 @@
                                         <td class="cart-image">
                                             <a class="entry-thumbnail" href="">
                                                 <img
-                                                    :src="`/storage/${item.product.image}`"
+                                                    :src="`/storage/images/products/${item.product.image}`"
                                                     alt=""
                                                 />
                                             </a>
@@ -493,11 +493,15 @@ const create = async () => {
         });
 
         router.push({
-            name: "order-detail",
-            params: { id: response.order_id },
+            name: "order",
         });
     } catch (error) {
-        console.log(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+        });
     }
 };
 
@@ -506,17 +510,33 @@ const addAdd = async () => {
 
     formData.append("name", name.value);
     formData.append("phone", phone.value);
-    formData.append("city", city.value.name);
-    formData.append("district", district.value.pre + " " + district.value.name);
-    formData.append("ward", ward.value.pre + " " + ward.value.name);
+    formData.append("city", city.value.name ?? "");
+    formData.append("district", district.value.pre ? district.value.pre + " " + district.value.name : "");
+    formData.append("ward", ward.value.pre ? ward.value.pre + " " + ward.value.name : "");
     formData.append("address", address.value);
 
     try {
-        await addAddress(formData);
+        const response = await addAddress(formData);
         await getListAddress();
 
         isAdd.value = false;
-    } catch (error) {}
+
+        Swal.fire({
+            title: "Thành công",
+            text: response.message,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: error.response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    }
 };
 
 onBeforeMount(async () => {

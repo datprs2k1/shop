@@ -8,6 +8,7 @@ use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreRequest;
 use App\Http\Requests\Product\UpdateRequest;
+use App\Models\Inventory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -28,12 +29,13 @@ class ProductController extends Controller
     {
         $q = $request->q;
 
-        $data = $this->model->with(['category', 'supplier', 'inventory'])
+        $data = $this->model
+            ->with(['category', 'supplier', 'inventory'])
             ->when($q, function ($query, $q) {
-                $query->where('name', 'like', '%' . $q . '%')
-                    ->orWhere('description', 'like', '%' . $q . '%');
+                $query->where('name', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();
+            ->paginate(100)
+            ->withQueryString();
 
         $unit = ProductUnit::getProductUnit();
         $status = ProductStatus::getProductStatus();
@@ -60,7 +62,9 @@ class ProductController extends Controller
     public function store(StoreRequest $request)
     {
         $file_name = time() . '_' . $request->image->getClientOriginalName();
-        $file_path = $request->file('image')->storeAs('images/products', $file_name, 'public');
+        $file_path = $request
+            ->file('image')
+            ->storeAs('images/products', $file_name, 'public');
 
         $product = new Product();
 
@@ -76,7 +80,6 @@ class ProductController extends Controller
 
         $product->save();
 
-
         $product->inventory()->create([
             'supplier_id' => $request->supplier_id,
         ]);
@@ -87,20 +90,20 @@ class ProductController extends Controller
             $from = public_path('tmp/uploads/' . $image);
             $to = storage_path('app/public/images/products/' . $image);
 
-
             File::move($from, $to);
-
 
             $product->images()->create([
                 'name' => $image,
             ]);
         }
 
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Thêm thành công.',
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Thêm thành công.',
+            ],
+            200
+        );
     }
 
     /**
@@ -134,8 +137,6 @@ class ProductController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-
-
         $product = Product::find($id);
 
         $product->name = $request->name;
@@ -147,19 +148,20 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->supplier_id = $request->supplier_id;
         if ($request->file('image') != null) {
-            $file_name = time() . '_' . $request->image->getClientOriginalName();
-            $file_path = $request->file('image')->storeAs('images/products', $file_name, 'public');
+            $file_name =
+                time() . '_' . $request->image->getClientOriginalName();
+            $file_path = $request
+                ->file('image')
+                ->storeAs('images/products', $file_name, 'public');
             Storage::disk('public')->delete($request->image);
             $product->image = $file_path;
         }
 
         $product->save();
 
-
         $product->inventory()->update([
             'supplier_id' => $request->supplier_id,
         ]);
-
 
         if ($request->add_images != null) {
             $add_images = explode(',', $request->add_images);
@@ -168,9 +170,7 @@ class ProductController extends Controller
                 $from = public_path('tmp/uploads/' . $image);
                 $to = storage_path('app/public/images/products/' . $image);
 
-
                 File::move($from, $to);
-
 
                 $product->images()->create([
                     'name' => $image,
@@ -178,20 +178,24 @@ class ProductController extends Controller
             }
         }
 
-
         if ($request->delete_images != null) {
             $delete_images = explode(',', $request->delete_images);
             foreach ($delete_images as $image) {
                 Storage::disk('public')->delete('images/products/' . $image);
-                $product->images()->where('name', $image)->delete();
+                $product
+                    ->images()
+                    ->where('name', $image)
+                    ->delete();
             }
         }
 
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Sửa thành công.',
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Sửa thành công.',
+            ],
+            200
+        );
     }
 
     /**
@@ -203,12 +207,32 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = $this->model->find($id);
+
+        $product = $this->model->withCount('order')->find($id);
+
+        if ($product->order_count > 0) {
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Không thể xoá sản phẩm đã được đặt hàng.',
+                ],
+                422
+            );
+        }
+
+        $inventory = Inventory::find($product->inventory->id);
+
+        $inventory->delete();
+
         $product->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Xoá thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Xoá thành công.',
+            ],
+            200
+        );
     }
 
     public function listTrash(Request $request)
@@ -219,7 +243,8 @@ class ProductController extends Controller
             ->when($q, function ($query, $q) {
                 $query->where('name', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();;
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -230,10 +255,13 @@ class ProductController extends Controller
 
         $product->forceDelete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Xoá thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Xoá thành công.',
+            ],
+            200
+        );
     }
 
     public function restoreFromTrash($id)
@@ -242,10 +270,18 @@ class ProductController extends Controller
 
         $product->restore();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Khôi phục thành công.'
-        ], 200);
+        $inventory = Inventory::withTrashed()
+            ->where('product_id', $product->id)
+            ->first();
+        $inventory->restore();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Khôi phục thành công.',
+            ],
+            200
+        );
     }
 
     public function getProductStatus()
@@ -262,6 +298,6 @@ class ProductController extends Controller
 
     public function export()
     {
-        return Excel::download(new ProductExport, 'products.xlsx');
+        return Excel::download(new ProductExport(), 'products.xlsx');
     }
 }

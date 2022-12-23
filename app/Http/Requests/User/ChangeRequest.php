@@ -27,10 +27,29 @@ class ChangeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
+            'name' => ['required'],
+            'email' => [
                 'required',
-                Rule::unique(User::class)->ignore(Auth::user()->id)
+                'email',
+                Rule::unique(User::class)->ignore(Auth::user()->id),
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'name' => 'Tên',
+            'email' => 'Email',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => ':attribute không được để trống',
+            'email' => ':attribute không đúng định dạng',
+            'unique' => ':attribute đã tồn tại',
         ];
     }
 }

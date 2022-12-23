@@ -369,7 +369,7 @@
                         <img
                             class="option__image"
                             style="max-width: 80px; max-height: 80px"
-                            :src="props.option.logo"
+                            :src="`/storage/images/suppliers/${props.option.logo}`"
                             alt="Ảnh"
                         />
                         <span class="option__desc"
@@ -383,7 +383,7 @@
                         ><img
                             style="max-width: 100px; max-height: 100px"
                             class="option__image"
-                            :src="props.option.logo"
+                            :src="`/storage/images/suppliers/${props.option.logo}`"
                             alt="Ảnh"
                         />
                         <span class="option__desc"
@@ -434,7 +434,7 @@
 
                         <img
                             v-if="url"
-                            :src="`/storage/images/products/${url}`"
+                            :src="`${url}`"
                             class="img-fluid"
                             style="
                                 border-radius: 5px;
@@ -525,7 +525,7 @@
             striped
             hover
             :items="trash.data"
-            :fields="fields"
+            :fields="trashFields"
             v-model:sort-by="sortBy"
             v-model:sort-desc="sortDesc"
         >
@@ -556,6 +556,36 @@
                         <i class="fas fa-trash fa-lg"></i>
                     </b-button>
                 </span>
+            </template>
+            <template #cell(image)="row">
+                <div>
+                    <center>
+                        <span>
+                            <img
+                                style="
+                                    border-radius: 5px;
+                                    width: 100px;
+                                    height: 80px;
+                                    box-shadow: 0px 0px 10px #ccc;
+                                "
+                                :src="`/storage/images/products/${row.item.image}`"
+                            />
+                        </span>
+                    </center>
+                </div>
+            </template>
+            <template #cell(status)="row">
+                <div>
+                    <center>
+                        <span>
+                            {{
+                                status.find(
+                                    (item) => item.id == row.item.status
+                                ).name
+                            }}
+                        </span>
+                    </center>
+                </div>
             </template>
         </b-table>
         <b-pagination
@@ -701,6 +731,36 @@ const fields = ref([
     },
 ]);
 
+const trashFields = [
+    {
+        key: "id",
+        label: "ID",
+        class: "text-center",
+    },
+    {
+        key: "image",
+        label: "Ảnh",
+        class: "text-center",
+    },
+    {
+        key: "name",
+        label: "Tên sản phẩm",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "status",
+        label: "Trạng thái",
+        sortable: true,
+        class: "text-center",
+    },
+    {
+        key: "action",
+        label: "Hành động",
+        class: "text-center",
+    },
+];
+
 const showModal = ref(false);
 
 const showTrashModal = ref(false);
@@ -775,7 +835,7 @@ onBeforeMount(async () => {
 const currenPage = watch(current_page, async (newPage) => {
     const url = products.value.links[newPage].url;
 
-    await getListProduct(url.slice(19, url.length));
+    await getListProduct(url.slice(20, url.length));
 });
 
 const add = async () => {
@@ -785,7 +845,6 @@ const add = async () => {
     data.append("description", description.value);
     data.append("manual", manual.value);
     data.append("price", price.value);
-    data.append("quantity", quantity.value);
     data.append("status", status_options.value.id);
     data.append("unit", unit_options.value.id);
     data.append("category_id", category_options.value.id);
@@ -834,7 +893,7 @@ const del = async (id) => {
     } catch (error) {
         Swal.fire({
             title: "Thất bại",
-            text: "Có lỗi xảy ra.",
+            text:  error.response.data.message,
             icon: "error",
             showConfirmButton: false,
             timer: 1000,
@@ -921,7 +980,7 @@ const show = (product) => {
     category_options.value = product.category;
     supplier_options.value = product.supplier;
 
-    url.value = product.image;
+    url.value = '/storage/images/products/'+product.image;
 
     media_server.value = "/admin/media/" + product.id;
 };

@@ -17,11 +17,12 @@ export const useInventoryStore = defineStore("inventory", {
     },
 
     actions: {
-        async getListInventory() {
-            const response = await get("/admin/inventory");
+        async getListInventory(url = `/admin/inventory/`) {
+            const response = await get(url);
+
             this.inventories = response.data;
         },
-
+        
         async getInfoInventory(id) {
             const response = await get(`/admin/inventory/${id}`);
             this.inventory = response.data;

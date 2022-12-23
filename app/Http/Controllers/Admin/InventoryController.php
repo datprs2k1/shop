@@ -21,7 +21,9 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $data = Inventory::with('product', 'supplier', 'logs')->paginate(10)->withQueryString();
+        $data = Inventory::with('product', 'supplier', 'logs')
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -49,33 +51,52 @@ class InventoryController extends Controller
 
     public function export()
     {
-        return Excel::download(new InventoryExport, 'inventoy.xlsx');
+        return Excel::download(new InventoryExport(), 'inventoy.xlsx');
     }
 
     public function store(StoreRequest $request)
     {
-
         $product = Product::findOrFail($request->product_id);
 
         $supplier = Category::findOrFail($product->supplier_id);
 
-        $inventory = Inventory::where('product_id', $request->product_id)
-            ->firstOrCreate([
+        $inventory = Inventory::where(
+            'product_id',
+            $request->product_id
+        )->first();
+
+        if ($inventory) {
+            $inventory->logs()->create([
+                'status' => InventoryLogEnum::NHAP,
+                'quantity' => $request->quantity,
+                'remain' => $inventory->quantity + $request->quantity,
+            ]);
+
+            $inventory->update([
+                'quantity' => $inventory->quantity + $request->quantity,
+                'status' => InventoryStatusEnum::CON_HANG,
+            ]);
+        } else {
+            $inventory = Inventory::create([
                 'product_id' => $request->product_id,
                 'supplier_id' => $supplier->id,
                 'quantity' => $request->quantity,
                 'status' => InventoryStatusEnum::CON_HANG,
             ]);
 
-        $inventory->logs()->create([
-            'status' => InventoryLogEnum::NHAP,
-            'quantity' => $request->quantity,
-            'remain' => $inventory->quantity + $request->quantity,
-        ]);
+            $inventory->logs()->create([
+                'status' => InventoryLogEnum::NHAP,
+                'quantity' => $request->quantity,
+                'remain' => $request->quantity,
+            ]);
+        }
 
-        return response()->json([
-            'message' => 'Thêm mới thành công',
-            'data' => $inventory
-        ], 201);
+        return response()->json(
+            [
+                'message' => 'Thêm mới thành công',
+                'data' => $inventory,
+            ],
+            201
+        );
     }
 }

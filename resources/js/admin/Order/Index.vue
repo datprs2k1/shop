@@ -61,7 +61,10 @@
                             <template #cell(action)="row">
                                 <span
                                     class="mr-3"
-                                    v-show="row.item.status == 2"
+                                    v-show="
+                                        row.item.status == 2 ||
+                                        row.item.status == 0
+                                    "
                                 >
                                     <b-button
                                         size="sm"
@@ -77,7 +80,10 @@
                                 </span>
                                 <span
                                     class="mr-3"
-                                    v-show="row.item.status == 1"
+                                    v-show="
+                                        row.item.status == 1 ||
+                                        row.item.status == 0
+                                    "
                                 >
                                     <b-button
                                         size="sm"
@@ -106,6 +112,15 @@
                                         </span>
                                     </center>
                                 </div>
+                            </template>
+                            <template #cell(id)="row">
+                                <router-link
+                                    :to="{
+                                        name: 'order-detail',
+                                        params: { id: row.item.id },
+                                    }"
+                                    >{{ row.item.id }}</router-link
+                                >
                             </template>
                         </b-table>
                         <b-pagination

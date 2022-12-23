@@ -30,10 +30,12 @@ class CategoryController extends Controller
 
         $data = $this->model
             ->when($q, function ($query, $q) {
-                $query->where('name', 'like', '%' . $q . '%')
+                $query
+                    ->where('name', 'like', '%' . $q . '%')
                     ->orWhere('description', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -63,9 +65,12 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return response()->json([
-            'message' => 'Thêm thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Thêm thành công.',
+            ],
+            200
+        );
     }
 
     /**
@@ -102,9 +107,12 @@ class CategoryController extends Controller
         $category = $this->model->find($id);
 
         if ($category == null) {
-            return response()->json([
-                'message' => 'Không tồn tại.'
-            ], 422);
+            return response()->json(
+                [
+                    'message' => 'Không tồn tại.',
+                ],
+                422
+            );
         }
 
         $category->name = $request->name;
@@ -112,9 +120,12 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return response()->json([
-            'message' => 'Sửa thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Sửa thành công.',
+            ],
+            200
+        );
     }
 
     /**
@@ -128,18 +139,36 @@ class CategoryController extends Controller
         $category = $this->model->find($id);
 
         if ($category == null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Không tồn tại.'
-            ], 422);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Không tồn tại.',
+                ],
+                422
+            );
+        }
+
+        $product = $category->products();
+
+        if ($product->count() > 0) {
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Không thể xoá danh mục này.',
+                ],
+                422
+            );
         }
 
         $category->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Xoá thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Xoá thành công.',
+            ],
+            200
+        );
     }
 
     public function listTrash(Request $request)
@@ -150,7 +179,8 @@ class CategoryController extends Controller
             ->when($q, function ($query, $q) {
                 $query->where('name', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();;
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -163,7 +193,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Xoá thành công.'
+            'message' => 'Xoá thành công.',
         ]);
     }
 
@@ -175,7 +205,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Khôi phục thành công.'
+            'message' => 'Khôi phục thành công.',
         ]);
     }
 

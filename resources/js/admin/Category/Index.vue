@@ -390,7 +390,7 @@ onBeforeMount(async () => {
 const currenPage = watch(current_page, async (newPage) => {
     const url = categories.value.links[newPage].url;
 
-    await getListCategory(url.slice(19, url.length));
+    await getListCategory(url.slice(20, url.length));
 });
 
 const add = async () => {
@@ -434,7 +434,7 @@ const del = async (id) => {
     } catch (error) {
         Swal.fire({
             title: "Thất bại",
-            text: "Có lỗi xảy ra.",
+            text:  error.response.data.message,
             icon: "error",
             showConfirmButton: false,
             timer: 1000,

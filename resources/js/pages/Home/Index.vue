@@ -217,8 +217,8 @@
                                                                                         "
                                                                                         :class="{
                                                                                             disabled:
-                                                                                                product.quantity !=
-                                                                                                1,
+                                                                                                product.status !=
+                                                                                                0,
                                                                                         }"
                                                                                     >
                                                                                         <i

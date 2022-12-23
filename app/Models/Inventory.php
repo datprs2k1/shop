@@ -4,17 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'product_id',
-        'supplier_id',
-        'quantity',
-        'status'
-    ];
+    protected $fillable = ['product_id', 'supplier_id', 'quantity', 'status'];
 
     public function product()
     {
@@ -33,6 +29,9 @@ class Inventory extends Model
 
     public function logs()
     {
-        return $this->hasMany(InventoryLog::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(InventoryLog::class)->orderBy(
+            'created_at',
+            'desc'
+        );
     }
 }

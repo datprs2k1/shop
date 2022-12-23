@@ -33,19 +33,17 @@ export const useUserStore = defineStore("user", {
         async register(data) {
             const response = await post("/register", data);
 
-            this.user = response.data.user;
-            this.token = response.data.token;
-            this.type = response.data.type;
-            this.expires_in =
-                new Date().getTime() + response.data.expires_in * 1000;
-            this.isAuthenticated = true;
-
             return response;
         },
 
         async logout() {
             const response = await post("/logout");
-            this.reset();
+            
+            this.user = null;
+            this.token = null;
+            this.type = null;
+            this.expires_in = null;
+            this.isAuthenticated = false;
 
             return response;
         },

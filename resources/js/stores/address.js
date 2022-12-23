@@ -19,6 +19,8 @@ export const useAddressStore = defineStore("address", {
 
         async addAddress(address) {
             const response = await post("/address", address);
+
+            return response;
         },
     },
 });

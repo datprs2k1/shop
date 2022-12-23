@@ -364,14 +364,14 @@ onBeforeMount(async () => {
 const currenPage = watch(current_page, async (newPage) => {
     const url = inventories.value.links[newPage].url;
 
-    await getListInventory(url.slice(19, url.length));
+    await getListInventory(url.slice(20, url.length));
 });
 
 const search = async () => {
     const url =
         keyword != null
-            ? `/admin/category/?q=${keyword.value}`
-            : "/admin/category";
+            ? `/admin/inventory/?q=${keyword.value}`
+            : "/admin/inventory";
     await getListInventory(url);
 };
 
@@ -396,6 +396,9 @@ const addInventory = async () => {
             timer: 1000,
             width: 360,
         });
+
+        await getListInventory();
+
 
         showAddModal.value = false;
     } catch (error) {

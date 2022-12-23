@@ -77,7 +77,7 @@
                                         <td class="cart-image">
                                             <a class="entry-thumbnail" href="">
                                                 <img
-                                                    :src="`/storage/${item.image}`"
+                                                    :src="`/storage/images/products/${item.image}`"
                                                     alt=""
                                                 />
                                             </a>

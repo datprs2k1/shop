@@ -170,8 +170,8 @@
                                                     @click="add(product.id)"
                                                     :class="{
                                                         disabled:
-                                                            productStatus.status !=
-                                                            1,
+                                                            product.status !=
+                                                            0,
                                                     }"
                                                 >
                                                     <i
@@ -286,7 +286,7 @@
                                         <div class="product-tab">
                                             <div class="product-reviews">
                                                 <img
-                                                    :src="`${product.supplier.logo}`"
+                                                    :src="`/storage/images/suppliers/${product.supplier.logo}`"
                                                     alt=""
                                                     style="
                                                         width: 150px;

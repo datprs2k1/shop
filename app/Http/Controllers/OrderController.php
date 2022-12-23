@@ -83,7 +83,9 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $data = Order::with('products', 'address')->where('user_id', auth()->id())->where('id', $id)->first();
+        $data = Order::with('products', 'address')
+            ->where('id', $id)
+            ->first();
 
         return response()->json($data, 200);
     }
@@ -126,7 +128,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'status' => 200,
-            'data' => OrderMethod::getOrderMethod()
+            'data' => OrderMethod::getOrderMethod(),
         ]);
     }
 
@@ -134,7 +136,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'status' => 200,
-            'data' => OrderStatus::getOrderStatus()
+            'data' => OrderStatus::getOrderStatus(),
         ]);
     }
 }

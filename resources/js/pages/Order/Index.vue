@@ -48,7 +48,13 @@
                                             {{ index + 1 }}
                                         </td>
                                         <td class="romove-item">
-                                            <a href="">{{ order.id }}</a>
+                                            <router-link
+                                                :to="{
+                                                    name: 'order-detail',
+                                                    params: { id: order.id },
+                                                }"
+                                                >{{ order.id }}</router-link
+                                            >
                                         </td>
                                         <td class="romove-item">
                                             {{ order.method }}

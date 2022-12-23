@@ -120,6 +120,9 @@ import { ref, toRef } from "@vue/reactivity";
 import { onBeforeMount } from "@vue/runtime-core";
 import { storeToRefs } from "pinia";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const userStore = useUserStore();
 
@@ -180,6 +183,8 @@ const changePass = async () => {
             timer: 1000,
             width: 360,
         });
+
+        router.push("/login");
     } catch (error) {
         Swal.fire({
             icon: "error",

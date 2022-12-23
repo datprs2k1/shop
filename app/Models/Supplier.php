@@ -24,4 +24,9 @@ class Supplier extends Model
         'created_at' => 'datetime:d/m/Y H:i:s',
         'updated_at' => 'datetime:d/m/Y H:i:s',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

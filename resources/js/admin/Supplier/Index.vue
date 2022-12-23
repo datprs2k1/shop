@@ -127,6 +127,14 @@
                                     </center>
                                 </div>
                             </template>
+                            <template #cell(description)="row">
+                                {{
+                                    row.item.description.length > 100
+                                        ? row.item.description.substr(0, 100) +
+                                          "..."
+                                        : row.item.description
+                                }}
+                            </template>
                             <template #cell(action)="row">
                                 <span class="mr-3"
                                     ><b-button
@@ -601,7 +609,7 @@ onBeforeMount(async () => {
 const currenPage = watch(current_page, async (newPage) => {
     const url = suppliers.value.links[newPage].url;
 
-    await getListSupplier(url.slice(19, url.length));
+    await getListSupplier(url.slice(20, url.length));
 });
 
 const add = async () => {
@@ -655,7 +663,7 @@ const del = async (id) => {
     } catch (error) {
         Swal.fire({
             title: "Thất bại",
-            text: "Có lỗi xảy ra.",
+            text:  error.response.data.message,
             icon: "error",
             showConfirmButton: false,
             timer: 1000,

@@ -40,12 +40,18 @@
                                                 <div class="product">
                                                     <div class="product-image">
                                                         <div class="image">
-                                                            <a href=""
+                                                            <router-link
+                                                                :to="{
+                                                                    name: 'product',
+                                                                    params: {
+                                                                        id: product.id,
+                                                                    },
+                                                                }"
                                                                 ><img
                                                                     :src="`/storage/images/products/${product.image}`"
                                                                     alt=""
                                                                     class="images"
-                                                            /></a>
+                                                            /></router-link>
                                                         </div>
                                                         <!-- /.image -->
                                                     </div>
@@ -54,9 +60,17 @@
                                                         class="product-info text-left"
                                                     >
                                                         <h3 class="name">
-                                                            <a href="">{{
-                                                                product.name
-                                                            }}</a>
+                                                            <router-link
+                                                                :to="{
+                                                                    name: 'product',
+                                                                    params: {
+                                                                        id: product.id,
+                                                                    },
+                                                                }"
+                                                                >{{
+                                                                    product.name
+                                                                }}</router-link
+                                                            >
                                                         </h3>
                                                         <div
                                                             class="rating rateit-small"
@@ -97,6 +111,16 @@
                                                                             type="button"
                                                                             title=""
                                                                             data-original-title="Thêm"
+                                                                            @click="
+                                                                                add(
+                                                                                    product.id
+                                                                                )
+                                                                            "
+                                                                            :class="{
+                                                                                disabled:
+                                                                                    product.status !=
+                                                                                    0,
+                                                                            }"
                                                                         >
                                                                             <i
                                                                                 class="fa fa-shopping-cart"
@@ -142,17 +166,87 @@
 
 <script setup>
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { useCategoryStore } from "@/stores/category";
+import { useUserStore } from "@/stores/user";
+import { useCartStore } from "@/stores/cart";
 import { storeToRefs } from "pinia";
-import { onBeforeMount } from "@vue/runtime-core";
+import { onBeforeMount, ref } from "@vue/runtime-core";
+import Swal from "sweetalert2";
 
 const route = useRoute();
 
+const router = useRouter();
+
 const store = useCategoryStore();
+
+const cartStore = useCartStore();
+
+const userStore = useUserStore();
+
+const { isAuthenticated } = storeToRefs(userStore);
 
 const { category } = storeToRefs(store);
 
+const { cart } = storeToRefs(cartStore);
+
 const { getDetailCategoryHome } = store;
+
+const { addCart, editCart, getListCart } = cartStore;
+
+const edit = ref();
+
+const add = async (id) => {
+    if (isAuthenticated.value == false) {
+        router.push({
+            name: "login",
+        });
+
+        return;
+    }
+
+    let find = false;
+
+    cart.value.forEach(async (element) => {
+        if (element.product_id === id) {
+            edit.value = {
+                id: element.id,
+                quantity: element.quantity + 1,
+            };
+            find = true;
+        }
+    });
+
+    if (find) {
+        const formData = new FormData();
+        formData.append("product_id", id);
+        formData.append("quantity", edit.value.quantity);
+        formData.append("_method", "PUT");
+
+        await editCart(edit.value.id, formData);
+        await getListCart();
+    }
+
+    if (!find) {
+        const formData = new FormData();
+        formData.append("product_id", id);
+        formData.append("quantity", 1);
+
+        await addCart(formData);
+
+        await getListCart();
+    }
+
+    Swal.fire({
+        title: "Thêm công.",
+        text: "Thêm thành công.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1000,
+        width: 360,
+        position: "top-end",
+    });
+};
 
 onBeforeMount(async () => {
     await getDetailCategoryHome(route.params.id);

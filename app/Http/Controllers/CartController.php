@@ -18,7 +18,9 @@ class CartController extends Controller
      */
     public function index()
     {
-        $data = Cart::with(['product'])->where('user_id', Auth::user()->id)->get();
+        $data = Cart::with(['product'])
+            ->where('user_id', Auth::user()->id)
+            ->get();
 
         return response()->json($data, 200);
     }
@@ -41,12 +43,18 @@ class CartController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $inventory = Inventory::where('product_id', $request->product_id)->first();
+        $inventory = Inventory::where(
+            'product_id',
+            $request->product_id
+        )->first();
 
         if ($inventory->quantity < $request->quantity) {
-            return response()->json([
-                'message' => 'Số lượng sản phẩm trong kho không đủ',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Số lượng sản phẩm trong kho không đủ',
+                ],
+                422
+            );
         }
 
         Cart::create([
@@ -88,13 +96,18 @@ class CartController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-
-        $inventory = Inventory::where('product_id', $request->product_id)->first();
+        $inventory = Inventory::where(
+            'product_id',
+            $request->product_id
+        )->first();
 
         if ($inventory->quantity < $request->quantity) {
-            return response()->json([
-                'message' => 'Số lượng sản phẩm trong kho không đủ',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Số lượng sản phẩm trong kho không đủ',
+                ],
+                400
+            );
         }
 
         $cart = Cart::find($id);

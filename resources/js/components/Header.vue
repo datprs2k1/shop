@@ -220,7 +220,7 @@
                                                     <div class="image">
                                                         <a href="#"
                                                             ><img
-                                                                :src="`/storage/${item.product.image}`"
+                                                                :src="`/storage/images/products/${item.product.image}`"
                                                                 alt=""
                                                         /></a>
                                                     </div>
@@ -254,8 +254,10 @@
                                             </div>
                                             <hr />
                                         </div>
-                                        <!-- /.cart-item -->
-                                        <div class="clearfix"></div>
+                                       
+                                    </li>
+                                     <!-- /.cart-item -->
+                                     <div class="clearfix"></div>
                                         <div class="clearfix cart-total">
                                             <div class="pull-right">
                                                 <span class="text">
@@ -270,7 +272,6 @@
                                             >
                                         </div>
                                         <!-- /.cart-total-->
-                                    </li>
                                 </div>
                                 <div v-else>Giỏ hàng trống</div>
                             </ul>

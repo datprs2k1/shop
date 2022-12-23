@@ -90,55 +90,86 @@ class OrderController extends Controller
     public function approve($id)
     {
         $order = Order::with('products')->find($id);
+
+        foreach ($order->products as $product) {
+            $inventory = Inventory::where('product_id', $product->id)->first();
+            if ($inventory->quantity < $product->pivot->quantity) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'Sản phẩm ' .
+                            $product->name .
+                            ' không đủ số lượng để đáp ứng đơn hàng',
+                    ],
+                    422
+                );
+            }
+        }
+
         $order->status = 1;
         $order->save();
 
         foreach ($order->products as $product) {
             $inventory = Inventory::where('product_id', $product->id)->first();
-            $inventory->quantity = $inventory->quantity - $product->pivot->quantity;
+            $inventory->quantity =
+                $inventory->quantity - $product->pivot->quantity;
             $inventory->save();
 
             $inventory->logs()->create([
                 'quantity' => $product->pivot->quantity,
                 'remain' => $inventory->quantity,
-                'status' => 1
+                'status' => 1,
             ]);
 
             if ($inventory->quantity <= 0) {
+                $inventory->status = 2;
+                $inventory->save();
+
                 $product = $inventory->product;
-                $product->status = 0;
+                $product->status = 1;
                 $product->save();
             }
         }
 
-
         return response()->json([
             'status' => 200,
-            'message' => 'Order successfully approved'
+            'message' => 'Order successfully approved',
         ]);
     }
 
     public function cancel($id)
     {
         $order = Order::with('products')->find($id);
+        if ($order->status == 1) {
+            foreach ($order->products as $product) {
+                $inventory = Inventory::where(
+                    'product_id',
+                    $product->id
+                )->first();
+
+                $inventory->quantity =
+                    $inventory->quantity + $product->pivot->quantity;
+
+                $inventory->status = 1;
+                $inventory->save();
+
+                $inventory->logs()->create([
+                    'quantity' => $product->pivot->quantity,
+                    'remain' => $inventory->quantity,
+                    'status' => 2,
+                ]);
+
+                $product = $inventory->product;
+                $product->status = 0;
+                $product->save();
+            }
+        }
         $order->status = 2;
         $order->save();
 
-        foreach ($order->products as $product) {
-            $inventory = Inventory::where('product_id', $product->id)->first();
-            $inventory->quantity = $inventory->quantity + $product->pivot->quantity;
-            $inventory->save();
-
-            $inventory->logs()->create([
-                'quantity' => $product->pivot->quantity,
-                'remain' => $inventory->quantity,
-                'status' => 2
-            ]);
-        }
-
         return response()->json([
             'status' => 200,
-            'message' => 'Order successfully canceled'
+            'message' => 'Order successfully canceled',
         ]);
     }
 }

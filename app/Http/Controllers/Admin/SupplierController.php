@@ -33,10 +33,12 @@ class SupplierController extends Controller
 
         $data = $this->model
             ->when($q, function ($query, $q) {
-                $query->where('name', 'like', '%' . $q . '%')
+                $query
+                    ->where('name', 'like', '%' . $q . '%')
                     ->orWhere('description', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -60,7 +62,9 @@ class SupplierController extends Controller
     public function store(StoreRequest $request)
     {
         $file_name = time() . '_' . $request->logo->getClientOriginalName();
-        $file_path = $request->file('logo')->storeAs('images/suppliers', $file_name, 'public');
+        $file_path = $request
+            ->file('logo')
+            ->storeAs('images/suppliers', $file_name, 'public');
 
         $supplier = new Supplier();
 
@@ -76,11 +80,13 @@ class SupplierController extends Controller
 
         File::cleanDirectory(public_path('/tmp/uploads'));
 
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Thêm thành công.',
-        ], 201);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Thêm thành công.',
+            ],
+            201
+        );
     }
 
     /**
@@ -126,7 +132,9 @@ class SupplierController extends Controller
         if ($request->file('logo') != null) {
             Storage::disk('public')->delete($supplier->logo);
             $file_name = time() . '_' . $request->logo->getClientOriginalName();
-            $file_path = $request->file('logo')->storeAs('images/suppliers', $file_name, 'public');
+            $file_path = $request
+                ->file('logo')
+                ->storeAs('images/suppliers', $file_name, 'public');
             $supplier->logo = '/storage/' . $file_path;
         }
 
@@ -134,10 +142,13 @@ class SupplierController extends Controller
 
         File::cleanDirectory(public_path('/tmp/uploads'));
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Sửa thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Sửa thành công.',
+            ],
+            200
+        );
     }
 
     /**
@@ -149,12 +160,28 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         $supplier = $this->model->find($id);
+
+        $product = $supplier->products();
+
+        if ($product->count() > 0) {
+            return response()->json(
+                [
+                    'message' =>
+                        'Nhà cung cấp này đang có sản phẩm. Không thể xoá.',
+                ],
+                422
+            );
+        }
+
         $supplier->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Xoá thành công.'
-        ], 200);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Xoá thành công.',
+            ],
+            200
+        );
     }
 
     public function listTrash(Request $request)
@@ -165,7 +192,8 @@ class SupplierController extends Controller
             ->when($q, function ($query, $q) {
                 $query->where('name', 'like', '%' . $q . '%');
             })
-            ->paginate(10)->withQueryString();;
+            ->paginate(10)
+            ->withQueryString();
 
         return response()->json($data, 200);
     }
@@ -178,7 +206,7 @@ class SupplierController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Xoá thành công.'
+            'message' => 'Xoá thành công.',
         ]);
     }
 
@@ -190,12 +218,12 @@ class SupplierController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Khôi phục thành công.'
+            'message' => 'Khôi phục thành công.',
         ]);
     }
 
     public function export()
     {
-        return Excel::download(new SupplierExport, 'suppliers.xlsx');
+        return Excel::download(new SupplierExport(), 'suppliers.xlsx');
     }
 }

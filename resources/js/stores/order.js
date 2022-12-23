@@ -19,7 +19,7 @@ export const useOrderStore = defineStore("order", {
         async createOrder(data) {
             const response = await post("/order", data);
 
-            return response.data;
+            return response;
         },
 
         async getOrderDetail(id) {

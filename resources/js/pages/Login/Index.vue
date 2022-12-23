@@ -191,7 +191,14 @@ const Login = async () => {
 
         router.push({ name: "home" });
     } catch (error) {
-        console.log(error);
+        Swal.fire({
+            title: "Thất bại",
+            text: error.response.data.message,
+            icon: "danger",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
     }
 };
 
@@ -214,9 +221,15 @@ const Register = async () => {
             width: 360,
         });
 
-        router.push({ name: "home" });
     } catch (error) {
-        console.log(error);
+        Swal.fire({
+            title: "Thất bại",
+            text: error.response.data.message,
+            icon: "danger",
+            showConfirmButton: false,
+            timer: 1000,
+            width: 360,
+        });
     }
 };
 </script>
